@@ -1,5 +1,13 @@
 # pipex
 
+## Dup
+```bash
+// The answer is YES. A file descriptor that you make can take a value 0, 1, 2 if stdin, stdout or stderr are closed.
+close(1);     //closing stdout
+newfd=dup(1); //newfd takes value of least available fd number
+
+```
+---
 ## Dynamic Redirection Using Pipes
 - **What Is a Pipe?** A pipe allows data to flow between two processes: one writes to the pipe, and the other reads from it.
 -
