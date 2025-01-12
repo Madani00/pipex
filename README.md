@@ -1,11 +1,21 @@
 # pipex
 
 ## Dup
-```bash
-// The answer is YES. A file descriptor that you make can take a value 0, 1, 2 if stdin, stdout or stderr are closed.
-close(1);     //closing stdout
-newfd=dup(1); //newfd takes value of least available fd number
 
+```bash
+// A file descriptor that you make can take a value 0, 1, 2 if stdin, stdout or stderr are closed.
+int main()
+{
+    int fd_redirect_to = open("example.txt", O_CREAT | O_WRONLY, 0644);
+
+    close(1); // Close stdout
+    int fd_duplicate = dup(fd_redirect_to); // Duplicates fd_redirect_to to fd 1
+
+    fprintf(stderr, "fd_duplicate: %d\n", fd_duplicate); // Print to stderr
+    printf("This will go to the file!\n"); // Redirected to "file"
+
+    return 0;
+}
 ```
 ---
 ## Dynamic Redirection Using Pipes
