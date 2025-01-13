@@ -57,7 +57,31 @@ int main() {
     }
 }
 ```
+```bash
+int main(int argc, char *argv[]) {
+    int pipefds[2];
+    char buf;
 
+    pipe(pipefds);
+
+    if (fork() == 0) { // Child process
+        close(pipefds[1]); // Close write end of the pipe
+        while (read(pipefds[0], &buf, 1) > 0) { // Read one byte at a time
+            write(1, &buf, 1); // Write to stdout (1)
+        }
+        write(1, "\n", 1); // Add a newline for clarity
+        close(pipefds[0]); // Close read end of the pipe
+    } else { // Parent process
+        close(pipefds[0]); // Close read end of the pipe
+        write(pipefds[1], argv[1], strlen(argv[1])); // Write to the pipe
+        close(pipefds[1]); // Close write end of the pipe
+        wait(NULL); // Wait for the child process to finish
+    }
+
+    return 0;
+}
+
+```
 ---
 ## Why Use wait(NULL)?
 
