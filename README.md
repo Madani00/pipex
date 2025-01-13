@@ -91,3 +91,7 @@ Without `wait(NULL):`
 - This can cause **zombie processes:**
     - The child process continues to run after the parent terminates.
     - The operating system keeps an entry for the child in the process table, waiting for the parent to acknowledge its termination.
+ 
+---
+## NOTES
+- **child process** can also create one or more processes (the child becomes the parent of these new processes)
