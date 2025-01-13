@@ -103,7 +103,7 @@ int main(void)
 	pid = getpid();
 	printf("parent pid = %i\n", pid);
 	pid = fork();
-	if (pid == 0) /* child process is always 0 */
+	if (pid == 0)
 	{
 		for (i = 0; i < 5; i++)
 		{
@@ -113,7 +113,7 @@ int main(void)
 		printf("child exiting\n");
 		exit(0);
 	}
-	else /* parent is non-zero (child's pid) */
+	else
 	{
 		printf("child pid = %i\n", pid);
 		printf("waiting for child\n");
