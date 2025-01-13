@@ -17,6 +17,8 @@ int main()
 
     return 0;
 }
+
+dup2(fd_redirect_to, STDOUT_FILENO);   // Alternatively: close(1); dup(fd);
 ```
 ---
 ## Dynamic Redirection Using Pipes
