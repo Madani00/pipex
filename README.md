@@ -57,3 +57,13 @@ int main() {
     }
 }
 ```
+
+---
+## Why Use wait(NULL)?
+
+Without `wait(NULL):`
+
+- The parent might terminate before the child finishes reading and writing.
+- This can cause **zombie processes:**
+        - The child process continues to run after the parent terminates.
+        - The operating system keeps an entry for the child in the process table, waiting for the parent to acknowledge its termination.
