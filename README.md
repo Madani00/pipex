@@ -12,6 +12,7 @@ int main()
     int fd_duplicate = dup(fd_redirect_to); // Duplicates fd_redirect_to to fd 1
 
     fprintf(stderr, "fd_duplicate: %d\n", fd_duplicate); // Print to stderr
+    dprintf(fd_redirect_to, "yes it is : %d \n", fd_duplicate);     // or you can do this and pass it to the file
     printf("This will go to the file!\n"); // Redirected to "file"
 
     return 0;
