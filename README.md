@@ -93,6 +93,28 @@ Without `wait(NULL):`
     - The operating system keeps an entry for the child in the process table, waiting for the parent to acknowledge its termination.
  
 ---
+## pipe
+```bash
+int main()
+{
+    int pipefds[2];
+    char write_msg[] = "hi madani easy does it!";
+    char read_msg[20];
+
+    pipe(pipefds); // Create a pipe
+
+    // Write to the pipe
+    write(pipefds[1], write_msg, sizeof(write_msg));
+
+    // Read from the pipe
+    read(pipefds[0], read_msg, sizeof(read_msg));
+
+    printf("Read from pipe: %s\n", read_msg);
+
+    return 0;
+}
+```
+---
 ## fork
 
 - show how the parent wait for the child in easy easy way possible
