@@ -93,5 +93,36 @@ Without `wait(NULL):`
     - The operating system keeps an entry for the child in the process table, waiting for the parent to acknowledge its termination.
  
 ---
+## fork
+
+- show how the parent wait for the child in easy easy way possible
+```bash
+int main(void)
+{
+	int i, pid;
+	pid = getpid();
+	printf("parent pid = %i\n", pid);
+	pid = fork();
+	if (pid == 0) /* child process is always 0 */
+	{
+		for (i = 0; i < 5; i++)
+		{
+			printf("child process: %i\n",i);
+			sleep(1);
+		}
+		printf("child exiting\n");
+		exit(0);
+	}
+	else /* parent is non-zero (child's pid) */
+	{
+		printf("child pid = %i\n", pid);
+		printf("waiting for child\n");
+		wait(NULL);
+		printf("child terminated\n");
+	}
+	printf("parent exiting\n");
+}
+```
+---
 ## NOTES
 - **child process** can also create one or more processes (the child becomes the parent of these new processes)
