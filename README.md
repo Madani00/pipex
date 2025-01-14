@@ -150,3 +150,4 @@ int main(void)
 - **child process** can also create one or more processes (the child becomes the parent of these new processes)
 - **sort** : reads input and writes output, Once the user types Ctrl-D (which closes the write end of the communication channel that connects the keyboard to the stdin of the sort process)
 - After the `fork()` call, changes to the parent process will not be visible to the child process and vice versa.
+- The kernel creates the very first process (either init or its modern replacement like systemd) when the system boots.
