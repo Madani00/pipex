@@ -147,7 +147,7 @@ int main(void)
 ```
 ---
 # execve
-- the last line does not print, 
+- the last line does not print, bc the memory of our program gets overwritten by the new program `ls` 
 ```bash
 int main(int argc, char **argv)
 {
