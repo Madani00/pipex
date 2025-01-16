@@ -118,6 +118,7 @@ int main()
 ## fork
 
 - show how the parent wait for the child in easy easy way possible
+- changes in the child (process) does not affect other processes
 ```bash
 int main(void)
 {
