@@ -146,6 +146,19 @@ int main(void)
 }
 ```
 ---
+# execve
+- the last line does not print, 
+```bash
+int main(int argc, char **argv)
+{
+	char *args[] = {"/bin/ls", "-a", 0};
+
+	execve(args[0], args, NULL);
+	perror("execve hadchi fchkl it does not print");
+	exit(1);
+}
+```
+---
 ## NOTES
 - **child process** can also create one or more processes (the child becomes the parent of these new processes)
 - **sort** : reads input and writes output, Once the user types Ctrl-D (which closes the write end of the communication channel that connects the keyboard to the stdin of the sort process)
