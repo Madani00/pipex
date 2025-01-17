@@ -146,6 +146,15 @@ int main(void)
 	printf("parent exiting\n");
 }
 ```
+```yaml
+// 2^n       <-- to get the number of outputs
+int main()
+{
+	fork();
+	fork();
+	printf("how many times this line is gonna print?? \n"); // 4 times
+}
+```
 ---
 # execve
 - the last line does not print, bc the memory of our program gets overwritten by the new program `ls` 
