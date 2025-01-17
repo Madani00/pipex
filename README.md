@@ -155,6 +155,16 @@ int main()
 	printf("how many times this line is gonna print?? \n"); // 4 times
 }
 ```
+```yaml
+// to get only 3 processes
+int main()
+{
+	int fd = fork();
+	if (fd != 0)
+		fork();
+	printf("how many times this line is gonna print?? \n"); // 3 times
+}
+```
 ---
 # execve
 - the last line does not print, bc the memory of our program gets overwritten by the new program `ls` 
