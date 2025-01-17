@@ -5,33 +5,70 @@
 #include <sys/wait.h>
 #include <stdlib.h>
 
-int	ft_strncmp(const char *s1, const char *s2, size_t n)
-{
-	size_t	i;
 
-	if ((!s1 || !s2) || !n)
-		return (0);
-	i = 0;
-	while ((s1[i] || s2[i]) && i < n)
-	{
-		if (s1[i] != s2[i])
-			return ((unsigned char)s1[i] - (unsigned char)s2[i]);
-		i++;
-	}
-	return (0);
+char    *build_executable_path(char *cmd, char *path)
+{
+    char    *part_path;
+    char    *exe;
+
+    part_path = ft_strjoin(path, "/");
+    exe = ft_strjoin(part_path, cmd);
+    free(part_path);
+    if (access(exe, F_OK | X_OK) == 0)
+        return (exe);
+    free(exe);
+    return (NULL);
 }
 
-char * get_path(char **envp)
+char    *find_path(char *cmd, char **ev)
 {
-	int i = 0;
-	while (envp[i])
-	{
-		if (ft_strncmp(envp[i], "PATH=", 5) == 0)
-			return (envp[i] + 5);
-		i++;
-	}
+    char    **allpaths;
+    char    *exe;
+    int     i;
+
+    i = 0;
+    while (ev[i])
+    {
+        if (ft_strnstr(ev[i], "PATH=", 5) != NULL)
+            break ;
+        i++;
+    }
+    allpaths = ft_split((ev[i] + 5), ':');
+    i = 0;
+    while (allpaths[i])
+    {
+        exe = build_executable_path(cmd, allpaths[i]);
+        if (exe != NULL)
+        {
+            ft_clear_tab(allpaths);
+            return (exe);
+        }
+        i++;
+    }
+    ft_clear_tab(allpaths);
+    return (NULL);
 }
-int main(int argc, char *argv[], char **envp)
+
+void    exe(char **ev, char *av)
 {
-	printf("%s \n", get_path(envp));
+    char    **cmd;
+    char    *cmd_exe;
+
+    cmd = ft_split(av, ' ');
+    cmd_exe = find_path(cmd[0], ev);
+    if (cmd_exe == NULL)
+    {
+        perror("pipex: command not found");
+        ft_putendl_fd(cmd[0], 2);
+        ft_clear_tab(cmd);
+        exit(EXIT_FAILURE);
+    }
+    if (execve(cmd_exe, cmd, ev) == -1)
+    {
+        perror("pipex: execution error");
+        ft_putendl_fd(cmd[0], 2);
+        ft_clear_tab(cmd);
+        free(cmd_exe);
+        exit(EXIT_FAILURE);
+    }
 }

@@ -1,35 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strjoin.c                                       :+:      :+:    :+:   */
+/*   ft_free.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: eamchart <eamchart@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/23 12:33:51 by eamchart          #+#    #+#             */
-/*   Updated: 2025/01/17 10:53:37 by eamchart         ###   ########.fr       */
+/*   Created: 2025/01/17 11:38:28 by eamchart          #+#    #+#             */
+/*   Updated: 2025/01/17 11:40:24 by eamchart         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "pipex.h"
 
-char	*ft_strjoin(char *s1, char *s2)
+void	free_args(char **arg)
 {
-	char	*new;
-	size_t	i;
-	size_t	j;
+	int	i;
 
-	if (!s1)
-		return (ft_strdup(s2));
-	new = malloc(ft_strlen(s1) + ft_strlen(s2) + 1);
-	if (!new)
-		return (free(s1), NULL);
-	i = -1;
-	while (s1[++i])
-		new[i] = s1[i];
-	j = 0;
-	while (s2[j])
-		new[i++] = s2[j++];
-	new[i] = '\0';
-	//free(s1);
-	return (new);
+	i = 0;
+	while (arg[i])
+	{
+		free(arg[i]);
+		i++;
+	}
+	free(arg);
 }

@@ -6,7 +6,7 @@
 /*   By: eamchart <eamchart@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/14 18:45:01 by eamchart          #+#    #+#             */
-/*   Updated: 2025/01/15 17:48:42 by eamchart         ###   ########.fr       */
+/*   Updated: 2025/01/17 11:41:31 by eamchart         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,5 +20,7 @@
 #include <string.h>
 #include <sys/wait.h>
 #include <stdlib.h>
+
+void	free_args(char **arg);
 
 #endif

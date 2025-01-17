@@ -4,7 +4,7 @@ CFLAGS = -Wall -Wextra -Werror
 RM = rm -f
 MK = make
 
-SRCS = main.c
+SRCS = main.c ft_free.c
 
 # S_BONUS = operation2_bonus.c operations_bonus.c get_next_line_bonus.c \
 # 		main_bonus.c frees_bonus.c pushswap_utils_bonus.c \
