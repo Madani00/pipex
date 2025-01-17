@@ -6,7 +6,7 @@
 /*   By: eamchart <eamchart@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/14 18:44:39 by eamchart          #+#    #+#             */
-/*   Updated: 2025/01/17 11:51:38 by eamchart         ###   ########.fr       */
+/*   Updated: 2025/01/17 11:57:31 by eamchart         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,9 +76,7 @@ char *get_path(char *cmd, char **env)
 			exe_cmd = ft_strjoin(all_paths[index], s_cmd);
 			if (access(exe_cmd, X_OK | F_OK) == 0)
 			{
-				free(exe_cmd);
-				free(s_cmd);
-				free_args(all_paths);
+				free_all(all_paths, s_cmd, exe_cmd);
 				return (exe_cmd);
 			}
 			free(exe_cmd);

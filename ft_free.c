@@ -6,7 +6,7 @@
 /*   By: eamchart <eamchart@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/17 11:38:28 by eamchart          #+#    #+#             */
-/*   Updated: 2025/01/17 11:40:24 by eamchart         ###   ########.fr       */
+/*   Updated: 2025/01/17 11:56:20 by eamchart         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,4 +23,11 @@ void	free_args(char **arg)
 		i++;
 	}
 	free(arg);
+}
+
+void free_all(char **args, char *p1, char *p2)
+{
+	free_args(args);
+	free(p1);
+	free(p2);
 }
