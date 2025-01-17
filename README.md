@@ -160,6 +160,19 @@ int main(int argc, char **argv)
 }
 ```
 ---
+## access
+- you can move `ls` command to you diro ,and test this 
+```bash
+int main()
+{
+	if (access("ls", X_OK | F_OK) == 0) {
+		printf("File exists.\n");
+	} else {
+		perror("File does not exist");
+	}
+}
+```
+---
 ## NOTES
 - **child process** can also create one or more processes (the child becomes the parent of these new processes)
 - **sort** : reads input and writes output, Once the user types Ctrl-D (which closes the write end of the communication channel that connects the keyboard to the stdin of the sort process)
