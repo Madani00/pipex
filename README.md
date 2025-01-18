@@ -167,6 +167,7 @@ int main()
 ```
 ---
 # execve
+- `execve` it replaces the current process image with a new one, and any dynamically allocated memory in the current process (including args and envp) is no longer accessible. 
 - the last line does not print, bc the memory of our program gets overwritten by the new program `ls` 
 ```bash
 int main(int argc, char **argv)
