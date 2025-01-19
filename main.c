@@ -6,17 +6,53 @@
 /*   By: eamchart <eamchart@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/14 18:44:39 by eamchart          #+#    #+#             */
-/*   Updated: 2025/01/17 11:57:31 by eamchart         ###   ########.fr       */
+/*   Updated: 2025/01/19 15:30:52 by eamchart         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
+int check_spaces(char *str)
+{
+	int i = 0;
+
+	if (str[0] == '\0')
+        return 1;
+
+	while (str[i])
+	{
+        if (str[i] == ' ')
+            i++;
+        else
+			return (0);
+    }
+    return 1;
+}
+
+void args_validate(int argc, char **av)
+{
+	if (argc != 5)
+	{
+		ft_putstr_fd("not enough arguments\n", 2);
+		exit(127);
+	}
+	if (check_spaces(av[2]))
+	{
+		ft_putstr_fd(av[2], 2);
+	 	ft_putstr_fd(" : command not found\n", 2);
+	}
+	if (check_spaces(av[3]))
+	{
+		ft_putstr_fd(av[3], 2);
+	 	ft_putstr_fd(" : command not found\n", 2);
+		exit(127);
+	}
+}
 
 char * getenv_path(char **envp)
 {
 	int i = 0;
-	while (envp[i])
+	while (envp && envp[i])
 	{
 		if (ft_strncmp(envp[i], "PATH=", 5) == 0)
 			return (envp[i] + 5);
@@ -25,136 +61,108 @@ char * getenv_path(char **envp)
 	return (NULL);
 }
 
-
-
-int args_validate_acc(char *cmd1, char *cmd2)
-{
-	int check;
-
-	check = 0;
-	if (access(cmd1, X_OK) != 0)
-	{
-		check = 1;
-	}
-	if (access(cmd2, X_OK) != 0)
-	{
-		check = 2;
-	}
-	return check;
-	// if (access(cmd1, X_OK) != 0)
-	// {
-	// 	ft_putstr_fd(cmd1, 2);
-	// 	ft_putstr_fd(" : command not executable\n", 2);
-	// 	check = 1;
-	// }
-	// if (access(cmd2, X_OK) != 0)
-	// {
-	// 	ft_putstr_fd(cmd2, 2);
-	// 	ft_putstr_fd(" : command not executable\n", 2);
-	// 	check = 1;
-	// }
-	// if (check)
-	// 	exit(127);
-}
-
-char *get_path(char *cmd, char **env)
+char *get_path2(char *cmd, char **env)
 {
 	char **all_paths;
 	char *s_cmd;
 	int index;
 	char *exe_cmd;
 
-	if (access(cmd, X_OK) == 0)
-		return cmd;
-	else
+	all_paths = ft_split(getenv_path(env), ':');
+	s_cmd = ft_strjoin("/", cmd);
+	index = 0;
+	while (all_paths && all_paths[index]) // all_paths &&
 	{
-		all_paths = ft_split(getenv_path(env), ':');
-		s_cmd = ft_strjoin("/", cmd);
-		index = 0;
-		while (all_paths[index])
+		exe_cmd = ft_strjoin(all_paths[index], s_cmd);
+		if (access(exe_cmd, X_OK | F_OK) == 0)
 		{
-			exe_cmd = ft_strjoin(all_paths[index], s_cmd);
-			if (access(exe_cmd, X_OK | F_OK) == 0)
-			{
-				free_all(all_paths, s_cmd, exe_cmd);
-				return (exe_cmd);
-			}
-			free(exe_cmd);
-			index++;
+			free_all(all_paths, s_cmd);
+			return (exe_cmd);
 		}
+		free(exe_cmd);
+		index++;
 	}
-	return NULL;
+	//free_all(all_paths, s_cmd);
+	return (NULL);
 }
 
-void args_validate(int argc, char **av)
+char *get_path(char *cmd, char **env)
 {
-	int check;
+	char *path;
 
-	check = 0;
-	if (argc != 5)
+	if (access(cmd, F_OK | X_OK) == 0) // && getenv_path(env)
+		return cmd;
+	path = get_path2(cmd, env);
+	if (!path)
 	{
-		ft_putstr_fd("not enough arguments\n", 2);
+		// ft_putstr_fd(cmd, 2);
+		// ft_putstr_fd(" : command not found\n", 2);
 		exit(127);
 	}
-	if (av[2][0] == '\0' || av[2][0] == ' ')
-	{
-		ft_putstr_fd(av[2], 2);
-		ft_putstr_fd(" : command not found\n", 2);
-		check = 1;
-	}
-	if (av[3][0] == '\0' || av[3][0] == ' ')
-	{
-		ft_putstr_fd(av[3], 2);
-		ft_putstr_fd(" : command not found\n", 2);
-		check = 1;
-	}
-	if (check)
-		exit(127);
-	//args_validate_acc(av[2], av[3]);
+	return (path);
+}
 
+
+void exe(char *cmd, char **env)
+{
+	char **cmd1_op;
+
+	cmd1_op = ft_split(cmd, ' ');
+	if (execve(get_path(cmd1_op[0], env), cmd1_op, env) == -1)
+	{
+		//free(get_path(cmd1_op[0], env));
+		ft_putstr_fd(cmd1_op[0], 2);
+		ft_putstr_fd(" : command not executable\n", 2);
+		free_args(cmd1_op);
+		// exit(127);
+		// return ;
+	}
+}
+
+void files_fail(char *file)
+{
+	ft_putstr_fd(file, 2);
+    ft_putstr_fd(" : No such file\n", 2);
+    exit(1);
 }
 
 int main(int argc, char *argv[], char **envp)
 {
+	int  file1;
+	int  file2;
+	int pipefds[2];
+	int pid_1;
+	int pid_2;
 
     args_validate(argc, argv);
-	printf("%s ", get_path(argv[2], envp));
+    file1 = open(argv[1], O_RDONLY);
+	if (file1 == -1)
+		files_fail(argv[1]);
+    file2 = open(argv[4], O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	if (file2 == -1)
+		files_fail(argv[4]);
 
-    // int infile = open(argv[1], O_RDONLY);
-	// if (infile == -1)
-	// {
-	// 	perror("Error");
-	// 	exit(1);
-	// }
-    // int outfile = open(argv[4], O_WRONLY | O_CREAT | O_TRUNC, 0644);
-
-    // int pipefds[2];
-    // pipe(pipefds);
-    // if (fork() == 0) {
-    //     // Child process for cmd1
-    //     dup2(infile, STDIN_FILENO);
-    //     dup2(pipefds[1], STDOUT_FILENO);
-    //     close(pipefds[0]);
-    //     execve(get_path(argv[2]), parse_args(argv[2]), envp);
-    //     exit(1);
-    // }
-
-    // if (fork() == 0) {
-    //     // Child process for cmd2
-    //     dup2(pipefds[0], STDIN_FILENO);
-    //     dup2(outfile, STDOUT_FILENO);
-    //     close(pipefds[1]);
-    //     execve(get_path(argv[3]), parse_args(argv[3]), envp);
-    //     exit(1);
-    // }
-
-    // close(pipefds[0]);
-    // close(pipefds[1]);
-    // wait(NULL);
-    // wait(NULL);
-
-    // close(infile);
-    // close(outfile);
-
+    pipe(pipefds);
+	pid_1 = fork();
+    if (pid_1 == 0)
+	{
+        dup2(file1, STDIN_FILENO);
+        dup2(pipefds[1], STDOUT_FILENO);
+        close(pipefds[0]);
+		exe(argv[2], envp);
+    }
+	pid_2 = fork();
+    if (pid_2 == 0)
+	{
+        dup2(pipefds[0], STDIN_FILENO);
+        dup2(file2, STDOUT_FILENO);
+        close(pipefds[1]);
+		exe(argv[3], envp);
+    }
+	close(pipefds[0]);
+	close(pipefds[1]);
+	waiting_children(pid_1, pid_2);
+	// close(infile);
+	// close(outfile);
     return 0;
 }

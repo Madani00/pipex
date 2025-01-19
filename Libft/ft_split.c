@@ -6,7 +6,7 @@
 /*   By: eamchart <eamchart@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/24 09:56:02 by eamchart          #+#    #+#             */
-/*   Updated: 2025/01/10 19:05:51 by eamchart         ###   ########.fr       */
+/*   Updated: 2025/01/18 18:57:57 by eamchart         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,8 @@ char	**ft_split(char const *s, char c)
 	char	**words;
 	int		i;
 
+	if (!s)
+		return (NULL);
 	len = count(s, c);
 	words = malloc(sizeof(char *) * (len + 1));
 	if (!words)

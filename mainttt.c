@@ -6,7 +6,7 @@
 #include <stdlib.h>
 
 
-char    *build_executable_path(char *cmd, char *path)
+char    *build_executable_path(char *cmd, char *path) // 3
 {
     char    *part_path;
     char    *exe;
@@ -20,7 +20,7 @@ char    *build_executable_path(char *cmd, char *path)
     return (NULL);
 }
 
-char    *find_path(char *cmd, char **ev)
+char    *find_path(char *cmd, char **ev) // 2
 {
     char    **allpaths;
     char    *exe;
@@ -49,7 +49,7 @@ char    *find_path(char *cmd, char **ev)
     return (NULL);
 }
 
-void    exe(char **ev, char *av)
+void    exe(char **ev, char *av) // 1
 {
     char    **cmd;
     char    *cmd_exe;
