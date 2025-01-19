@@ -6,7 +6,7 @@
 /*   By: eamchart <eamchart@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/14 18:45:01 by eamchart          #+#    #+#             */
-/*   Updated: 2025/01/19 15:26:59 by eamchart         ###   ########.fr       */
+/*   Updated: 2025/01/19 15:39:46 by eamchart         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,5 +24,7 @@
 void	free_args(char **arg);
 void free_all(char **args, char *p1);
 void waiting_children(int pid, int spid);
+int check_spaces(char *str);
+void args_validate(int argc, char **av);
 
 #endif

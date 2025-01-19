@@ -6,48 +6,11 @@
 /*   By: eamchart <eamchart@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/14 18:44:39 by eamchart          #+#    #+#             */
-/*   Updated: 2025/01/19 15:30:52 by eamchart         ###   ########.fr       */
+/*   Updated: 2025/01/19 15:54:07 by eamchart         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
-
-int check_spaces(char *str)
-{
-	int i = 0;
-
-	if (str[0] == '\0')
-        return 1;
-
-	while (str[i])
-	{
-        if (str[i] == ' ')
-            i++;
-        else
-			return (0);
-    }
-    return 1;
-}
-
-void args_validate(int argc, char **av)
-{
-	if (argc != 5)
-	{
-		ft_putstr_fd("not enough arguments\n", 2);
-		exit(127);
-	}
-	if (check_spaces(av[2]))
-	{
-		ft_putstr_fd(av[2], 2);
-	 	ft_putstr_fd(" : command not found\n", 2);
-	}
-	if (check_spaces(av[3]))
-	{
-		ft_putstr_fd(av[3], 2);
-	 	ft_putstr_fd(" : command not found\n", 2);
-		exit(127);
-	}
-}
 
 char * getenv_path(char **envp)
 {
@@ -71,7 +34,7 @@ char *get_path2(char *cmd, char **env)
 	all_paths = ft_split(getenv_path(env), ':');
 	s_cmd = ft_strjoin("/", cmd);
 	index = 0;
-	while (all_paths && all_paths[index]) // all_paths &&
+	while (all_paths && all_paths[index])
 	{
 		exe_cmd = ft_strjoin(all_paths[index], s_cmd);
 		if (access(exe_cmd, X_OK | F_OK) == 0)
@@ -82,7 +45,7 @@ char *get_path2(char *cmd, char **env)
 		free(exe_cmd);
 		index++;
 	}
-	//free_all(all_paths, s_cmd);
+	free_all(all_paths, s_cmd);
 	return (NULL);
 }
 
@@ -94,11 +57,7 @@ char *get_path(char *cmd, char **env)
 		return cmd;
 	path = get_path2(cmd, env);
 	if (!path)
-	{
-		// ft_putstr_fd(cmd, 2);
-		// ft_putstr_fd(" : command not found\n", 2);
-		exit(127);
-	}
+		return (NULL);
 	return (path);
 }
 
@@ -106,16 +65,17 @@ char *get_path(char *cmd, char **env)
 void exe(char *cmd, char **env)
 {
 	char **cmd1_op;
+	char *path;
 
 	cmd1_op = ft_split(cmd, ' ');
-	if (execve(get_path(cmd1_op[0], env), cmd1_op, env) == -1)
+	path = get_path(cmd1_op[0], env);
+	if (execve(path, cmd1_op, env) == -1)
 	{
-		//free(get_path(cmd1_op[0], env));
 		ft_putstr_fd(cmd1_op[0], 2);
 		ft_putstr_fd(" : command not executable\n", 2);
+		free(path);
 		free_args(cmd1_op);
-		// exit(127);
-		// return ;
+		exit(127);
 	}
 }
 
