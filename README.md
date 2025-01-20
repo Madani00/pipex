@@ -50,9 +50,6 @@ int main()
 ---
 ## Dynamic Redirection Using Pipes
 - **What Is a Pipe?** A pipe allows data to flow between two processes: one writes to the pipe, and the other reads from it.
--
--
--
 
 ```bash
 #include <stdio.h>
