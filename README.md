@@ -20,8 +20,8 @@ int main()
 
 dup2(fd_redirect_to, STDOUT_FILENO);   // Alternatively: close(1); dup(fd);
 ```
-```bash
 - save the stdin, then read from a file, then return the stdin to its state 
+```bash
 int main()
 {
     int savein = dup(STDIN_FILENO);    // Save the current stdin (file descriptor 0) savein = 3;
