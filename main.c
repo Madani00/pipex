@@ -6,7 +6,7 @@
 /*   By: eamchart <eamchart@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/14 18:44:39 by eamchart          #+#    #+#             */
-/*   Updated: 2025/01/19 21:07:01 by eamchart         ###   ########.fr       */
+/*   Updated: 2025/01/20 13:13:55 by eamchart         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,11 +30,11 @@ char *get_path2(char *cmd, char **env)
 	char *s_cmd;
 	int index;
 	char *exe_cmd;
+	char *path_env;
 
-		char *path_env = getenv_path(env);
-		if (!path_env)
-			return NULL;
-
+	path_env = getenv_path(env);
+	if (!path_env)
+		return NULL;
 	all_paths = ft_split(path_env, ':');
 	s_cmd = ft_strjoin("/", cmd);
 	index = 0;
@@ -60,7 +60,6 @@ char *get_path(char *cmd, char **env)
 	if (access(cmd, F_OK | X_OK) == 0)
 		return cmd;
 	path = get_path2(cmd, env);
-	printf("Executing: 1 %s\n", path);
 	if (!path)
 		return (NULL);
 	return (path);
@@ -72,33 +71,52 @@ void exe(char *cmd, char **env)
 	char *path;
 
 	cmd1_op = ft_split(cmd, ' ');
-	printf("paht command %s\n", cmd1_op[0]);
 	path = get_path(cmd1_op[0], env);
-	printf("Executing: 2 %s\n", path);
 	if (!path)
 	{
 		ft_putstr_fd(cmd1_op[0], 2);
-		ft_putstr_fd(": ya abatat command not found\n", 2);
+		ft_putstr_fd(": command path not found\n", 2);
 		free_args(cmd1_op);
 		exit(127);
 	}
-	printf("Executing: 3 %s\n", path);  // Debug print
 	if (execve(path, cmd1_op, env) == -1)
 	{
-		perror("execve fails oppps");
 		ft_putstr_fd(cmd1_op[0], 2);
 		ft_putstr_fd(" : command not executable\n", 2);
-		free(path);
+		//free(path);
 		free_args(cmd1_op);
 		exit(127);
 	}
 }
 
-void files_fail(char *file)
+
+void first_cmd(char **env, char *cmd1, int file1, int *pipefds)
 {
-	ft_putstr_fd(file, 2);
-    ft_putstr_fd(" : No such file\n", 2);
-    exit(1);
+	dup2(file1, STDIN_FILENO);
+    dup2(pipefds[1], STDOUT_FILENO);
+	write(2, &pipefds[0], 1);
+
+    close(pipefds[0]);
+	//close(pipefds[1]); // i added this
+	exe(cmd1, env);
+}
+
+void second_cmd(char **env, char *cmd2, int file2, int *pipefds)
+{
+	dup2(pipefds[0], STDIN_FILENO);
+    dup2(file2, STDOUT_FILENO);
+
+	//close(pipefds[0]); // i added this
+    close(pipefds[1]);
+	exe(cmd2, env);
+}
+
+void error_message(char *message, char *file)
+{
+	if (file)
+		ft_putstr_fd(file, 2);
+	ft_putstr_fd(message, 2);
+	exit(1);
 }
 
 int main(int argc, char *argv[], char **envp)
@@ -112,31 +130,37 @@ int main(int argc, char *argv[], char **envp)
 	args_validate(argc, argv);
 	file1 = open(argv[1], O_RDONLY);
 	if (file1 == -1)
-		files_fail(argv[1]);
+		error_message(" : No such file\n", argv[1]);
 	file2 = open(argv[4], O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (file2 == -1)
-		files_fail(argv[4]);
-    pipe(pipefds);
+		error_message(" : No such file\n", argv[4]);
+    if (pipe(pipefds) == -1)
+		error_message("Error pipe() failed: \n", 0);
+
 	pid_1 = fork();
     if (pid_1 == 0)
 	{
-        dup2(file1, STDIN_FILENO);
-        dup2(pipefds[1], STDOUT_FILENO);
-        close(pipefds[0]);
-		//close(pipefds[1]); // i added this
-		exe(argv[2], envp);
+		first_cmd(envp, argv[2], file1, pipefds);
+        // dup2(file1, STDIN_FILENO);
+        // dup2(pipefds[1], STDOUT_FILENO);
+        // close(pipefds[0]);
+		// //close(pipefds[1]); // i added this
+		// exe(argv[2], envp);
     }
 	pid_2 = fork();
     if (pid_2 == 0)
 	{
-        dup2(pipefds[0], STDIN_FILENO);
-        dup2(file2, STDOUT_FILENO);
-		//close(pipefds[0]); // i added this
-        close(pipefds[1]);
-		exe(argv[3], envp);
+		second_cmd(envp, argv[3], file2, pipefds);
+        // dup2(pipefds[0], STDIN_FILENO);
+        // dup2(file2, STDOUT_FILENO);
+		// //close(pipefds[0]); // i added this
+        // close(pipefds[1]);
+		// exe(argv[3], envp);
     }
+	if (pid_1 == -1 || pid_2 == -1)
+		error_message("Error fork() failed: \n", 0);
 	close(pipefds[0]);
 	close(pipefds[1]);
 	waiting_children(pid_1, pid_2);
-    return 0;
+	return (0);
 }
