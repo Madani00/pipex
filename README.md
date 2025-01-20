@@ -20,6 +20,33 @@ int main()
 
 dup2(fd_redirect_to, STDOUT_FILENO);   // Alternatively: close(1); dup(fd);
 ```
+```bash
+- save the stdin, then read from a file, then return the stdin to its state 
+int main()
+{
+    int savein = dup(STDIN_FILENO);    // Save the current stdin (file descriptor 0) savein = 3;
+    // Open a file to redirect stdin
+    int fd = open("inpt.txt", O_RDONLY); // fd = 4
+    // Redirect stdin to the file
+    dup2(fd, STDIN_FILENO);
+    close(fd); // Close the file descriptor since it's no longer needed
+    char buffer[100];    // Read from the new stdin (file input)
+    if (fgets(buffer, sizeof(buffer), stdin) != NULL)
+	{
+        printf("Read from input.txt: %s", buffer);
+    }
+    if (dup2(savein, STDIN_FILENO) == -1)   // Restore the original stdin
+	{
+        perror("dup2");
+        exit(EXIT_FAILURE);
+    }
+    close(savein);
+    printf("Enter something: "); // Read from the restored stdin (terminal input)
+    if (fgets(buffer, sizeof(buffer), stdin) != NULL) {
+        printf("You entered: %s", buffer);
+    }
+}
+```
 ---
 ## Dynamic Redirection Using Pipes
 - **What Is a Pipe?** A pipe allows data to flow between two processes: one writes to the pipe, and the other reads from it.
