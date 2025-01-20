@@ -109,6 +109,30 @@ int main(int argc, char *argv[]) {
 }
 
 ```
+```bash
+int main()
+{
+	int fds[2];
+	pipe(fds);
+	if (fork() == 0)
+	{
+		int x;
+		close(fds[0]);
+		printf("enter something b: ");
+		scanf("%d", &x);
+		write(fds[1], &x, sizeof(int));
+		close(fds[1]);
+	}
+	else
+	{
+		int y;
+		close(fds[1]);
+		read(fds[0], &y, sizeof(int));
+		printf("get this from the child: %d\n", y);
+		close(fds[0]);
+	}
+}
+```
 ---
 ## Why Use wait(NULL)?
 
