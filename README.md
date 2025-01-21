@@ -130,7 +130,7 @@ int main()
 	}
 }
 ```
-- if you remove sleep it hangs , cause the parent write and read and the same time ..
+- if you remove sleep it hangs , cause the parent write and read and the same time .., solution is you must have 2 pipes 
 ```bash
 int main()
 {
