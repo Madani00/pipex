@@ -130,6 +130,33 @@ int main()
 	}
 }
 ```
+- if you remove sleep it hangs , cause the parent write and read and the same time ..
+```bash
+int main()
+{
+	int fds[2];
+	pipe(fds);
+	if (fork() == 0) {
+		int x;
+		read(fds[0], &x, sizeof(int));
+		printf("recieve from the parent : %d\n", x);
+
+		x *= 2;
+		write(fds[1], &x, sizeof(int));
+		printf("child write: %d \n", x);
+	}
+	else {
+		int y = 5;
+		write(fds[1], &y, sizeof(int));
+		printf("parent write: %d \n", y);
+		sleep(2);
+		close(fds[0]);
+		read(fds[0], &y, sizeof(int));
+		printf("parent gets this from the child: %d\n", y);
+		wait(NULL);
+	}
+}
+```
 ---
 ## Why Use wait(NULL)?
 
