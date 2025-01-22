@@ -1,0 +1,28 @@
+# should work
+- PATH=NULL ./pipex filein "/bin/cat" "/bin/cat" fileout
+- when you pass path = "." , "./" , "/" . execve(path, cmd1_op, env) the function fails so no need to handle it
+ ./pipex /dev/stdin "cat" "wc -l" /dev/stdout
+ ./pipex file1 "echo 'hello world'" "grep hello" file2
+ ./pipex /dev/random cat "head -n 5" file2  
+ ./pipex file1 "sleep 3" "sleep 1" file2               <--- sleep 4 seconds
+
+# should not work
+- ./pipex filein cat /ls /dev/stdout
+- ./pipex filein cat ls /dev/stdout    (unset path, and you put ls exe in yr directory, but if you /bin/ls should work)
+
+
+
+# attention
+- PATH=NULL ./pipex filein "cat" "cat" fileout  (this way you are just putting the 'NULL' in the PATH variable, it never sets the path to empty)
+
+
+# mmm
+- i had a problem with leaks in the first command, it was that when i have " " i pass it execve, i fix it with if it was that just exit
+-  PATH= :$PATH ./pipex filein "mad" "wjjh" fileout             <--- does not do anything mm why?
+
+# hard to handle
+./pipex file1 "invalidcmd" "wc -l" file2
+Expected: Print an error like command not found: invalidcmd and exit with status 127
+
+# double free
+PATH=.:$PATH ./pipex filein "./mad" "wc -l" fileout  (FIX IT: ))
