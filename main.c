@@ -6,7 +6,7 @@
 /*   By: eamchart <eamchart@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/14 18:44:39 by eamchart          #+#    #+#             */
-/*   Updated: 2025/01/22 14:44:00 by eamchart         ###   ########.fr       */
+/*   Updated: 2025/01/22 16:26:54 by eamchart         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,10 @@ char	*get_path(char *cmd, char **env)
 {
 	char	*path;
 
-	if (access(cmd, X_OK) == 0) //  F_OK |
+	if (access(cmd, X_OK) == 0 && ft_strchr(cmd, '/')) //  F_OK |
 		return (cmd);
+	else if (access(cmd, X_OK) == 0 && !getenv_path(env))
+		return (NULL);
 	path = get_path2(cmd, env);
 	if (!path)
 		return (NULL);
@@ -84,6 +86,7 @@ void	first_cmd(char **env, char *cmd1, int file1, int *pipefds)
 	dup2(file1, STDIN_FILENO);
 	dup2(pipefds[1], STDOUT_FILENO);
 	write(2, &pipefds[0], 1);
+	close(file1);        // we duplicate stdin so we dont need file1 anymore
 	close(pipefds[0]);
 	close(pipefds[1]); // i added this
 	if (check_spaces(cmd1))
@@ -96,6 +99,7 @@ void	second_cmd(char **env, char *cmd2, int file2, int *pipefds)
 {
 	dup2(pipefds[0], STDIN_FILENO);
 	dup2(file2, STDOUT_FILENO);
+	close(file2);   //
 	close(pipefds[0]); // i added this
 	close(pipefds[1]);
 	exe(cmd2, env);
