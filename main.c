@@ -6,7 +6,7 @@
 /*   By: eamchart <eamchart@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/14 18:44:39 by eamchart          #+#    #+#             */
-/*   Updated: 2025/01/22 16:26:54 by eamchart         ###   ########.fr       */
+/*   Updated: 2025/01/22 18:11:13 by eamchart         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,6 @@ void	exe(char *cmd, char **env)
 	{
 		ft_putstr_fd(cmd1_op[0], 2);
 		ft_putstr_fd(" : command not executable\n", 2);
-		free(path);
 		free_args(cmd1_op);
 		exit(127);
 	}
