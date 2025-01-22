@@ -12,23 +12,24 @@
 
 #include "pipex.h"
 
-int check_spaces(char *str)
+int	check_spaces(char *str)
 {
-	int i = 0;
+	int	i;
 
+	i = 0;
 	if (str[0] == '\0')
-        return 1;
+		return (1);
 	while (str[i])
 	{
-        if (str[i] == ' ')
-            i++;
-        else
+		if (str[i] == ' ')
+			i++;
+		else
 			return (0);
-    }
-    return 1;
+	}
+	return (1);
 }
 
-void args_validate(int argc, char **av)
+void	args_validate(int argc, char **av)
 {
 	if (argc != 5)
 	{
@@ -38,12 +39,12 @@ void args_validate(int argc, char **av)
 	if (check_spaces(av[2]))
 	{
 		ft_putstr_fd(av[2], 2);
-	 	ft_putstr_fd(" : command not found\n", 2);
+		ft_putstr_fd(" : command not found\n", 2);
 	}
 	if (check_spaces(av[3]))
 	{
 		ft_putstr_fd(av[3], 2);
-	 	ft_putstr_fd(" : command not found\n", 2);
+		ft_putstr_fd(" : command not found\n", 2);
 		exit(127);
 	}
 }
