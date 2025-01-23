@@ -6,7 +6,7 @@
 /*   By: eamchart <eamchart@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/14 18:44:39 by eamchart          #+#    #+#             */
-/*   Updated: 2025/01/22 18:11:13 by eamchart         ###   ########.fr       */
+/*   Updated: 2025/01/23 21:21:49 by eamchart         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ char	*get_path(char *cmd, char **env)
 {
 	char	*path;
 
-	if (access(cmd, X_OK) == 0 && ft_strchr(cmd, '/')) //  F_OK |
+	if (access(cmd, X_OK) == 0 && ft_strchr(cmd, '/'))
 		return (cmd);
 	else if (access(cmd, X_OK) == 0 && !getenv_path(env))
 		return (NULL);
@@ -82,11 +82,12 @@ void	exe(char *cmd, char **env)
 
 void	first_cmd(char **env, char *cmd1, int file1, int *pipefds)
 {
-	dup2(file1, STDIN_FILENO);
-	dup2(pipefds[1], STDOUT_FILENO);
-	write(2, &pipefds[0], 1);
-	close(file1);        // we duplicate stdin so we dont need file1 anymore
 	close(pipefds[0]);
+	if (dup2(file1, STDIN_FILENO) == -1)
+		ft_putstr_fd("Error dup2() cmd1 failed: \n", 2);
+	if (dup2(pipefds[1], STDOUT_FILENO) == -1)
+		ft_putstr_fd("Error dup2() cmd1 failed: \n", 2);
+	close(file1);        // we duplicate stdin so we dont need file1 anymore
 	close(pipefds[1]); // i added this
 	if (check_spaces(cmd1))
 		exit(127);
@@ -96,11 +97,13 @@ void	first_cmd(char **env, char *cmd1, int file1, int *pipefds)
 
 void	second_cmd(char **env, char *cmd2, int file2, int *pipefds)
 {
-	dup2(pipefds[0], STDIN_FILENO);
-	dup2(file2, STDOUT_FILENO);
-	close(file2);   //
-	close(pipefds[0]); // i added this
 	close(pipefds[1]);
+	if(dup2(pipefds[0], STDIN_FILENO) == -1)
+		ft_putstr_fd("Error dup2() cmd2 failed: \n", 2);
+	if (dup2(file2, STDOUT_FILENO) == -1)
+		ft_putstr_fd("Error dup2() cmd2 failed: \n", 2);
+	close(file2);
+	close(pipefds[0]);
 	exe(cmd2, env);
 }
 
@@ -115,10 +118,10 @@ int	main(int argc, char *argv[], char **envp)
 	args_validate(argc, argv);
 	file1 = open(argv[1], O_RDONLY);
 	if (file1 == -1)
-		error_message(" : No such file\n", argv[1]);
+		error_message(" : No such file or directory\n", argv[1]);
 	file2 = open(argv[4], O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (file2 == -1)
-		error_message(" : No such file\n", argv[4]);
+		error_message(" : No such file or directory\n", argv[4]);
 	if (pipe(pipefds) == -1)
 		error_message("Error pipe() failed: \n", 0);
 	pid_1 = fork();
