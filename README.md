@@ -274,5 +274,6 @@ int main()
 - After the `fork()` call, changes to the parent process will not be visible to the child process and vice versa.
 - The kernel creates the very first process (either init or its modern replacement like systemd) when the system boots.
 ## Copy-on-Write (CoW) mechanism
-- After fork(), Instead of duplicating memory immediately, it shares memory between the parent and child processes. Only when one process tries to modify the memory does the OS create a separate copy for that process. 
+- After fork(), Instead of duplicating memory immediately, it shares memory between the parent and child processes. Only when one process tries to modify the memory does the OS create a separate copy for that process.
+- ctrl+z stops a process
 
