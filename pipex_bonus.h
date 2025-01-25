@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.h                                            :+:      :+:    :+:   */
+/*   pipex_bonus.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: eamchart <eamchart@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/14 18:45:01 by eamchart          #+#    #+#             */
-/*   Updated: 2025/01/23 21:59:02 by eamchart         ###   ########.fr       */
+/*   Created: 2025/01/24 22:16:11 by eamchart          #+#    #+#             */
+/*   Updated: 2025/01/25 11:02:10 by eamchart         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PIPEX_H
-# define PIPEX_H
+#ifndef PIPEX_BONUS_H
+# define PIPEX_BONUS_H
 
 # include "Libft/libft.h"
 # include <fcntl.h>
@@ -20,6 +20,8 @@
 # include <string.h>
 # include <sys/wait.h>
 # include <unistd.h>
+
+# define BUFFER_SIZE 1
 
 void	free_args(char **arg);
 void	free_all(char **args, char *p1);
