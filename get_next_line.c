@@ -6,12 +6,11 @@
 /*   By: eamchart <eamchart@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/25 11:00:48 by eamchart          #+#    #+#             */
-/*   Updated: 2025/01/25 11:01:14 by eamchart         ###   ########.fr       */
+/*   Updated: 2025/01/26 19:16:38 by eamchart         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex_bonus.h"
-
 
 char	*fetch_line(char *buffer)
 {

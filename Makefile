@@ -6,19 +6,25 @@ MK = make
 
 SRCS = main.c ft_free_error.c pipex_utils.c checking.c
 
-# S_BONUS = operation2_bonus.c operations_bonus.c get_next_line_bonus.c \
-# 		main_bonus.c frees_bonus.c pushswap_utils_bonus.c \
-
+S_BONUS = main_bonus.c get_next_line.c
 
 OBJS = $(SRCS:.c=.o)
 
-# OBJS_BONUS = $(S_BONUS:.c=.o)
+OBJS_BONUS = $(S_BONUS:.c=.o)
 
 all : $(NAME)
 
 $(NAME): $(OBJS)
 		$(MK) -C ./Libft
 		$(CC) $(CFLAGS) $(OBJS) ./Libft/libft.a -o $(NAME)
+
+bonus : $(BONUS_NAME)
+
+$(BONUS_NAME) : $(OBJS_BONUS) ./Libft/libft.a
+	$(CC) $(CFLAGS) $(OBJS_BONUS) ./Libft/libft.a -o $(BONUS_NAME)
+
+./Libft/libft.a:
+	$(MK) -C ./Libft
 
 clean:
 		$(MK) clean -C ./Libft
