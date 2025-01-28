@@ -1,4 +1,5 @@
 NAME = pipex
+BONUS_NAME = bpipex
 CC = cc
 CFLAGS = -Wall -Wextra -Werror
 RM = rm -f
@@ -6,7 +7,7 @@ MK = make
 
 SRCS = main.c ft_free_error.c pipex_utils.c checking.c
 
-S_BONUS = main_bonus.c get_next_line.c
+S_BONUS = main_bonus.c get_next_line.c bonus_utils.c
 
 OBJS = $(SRCS:.c=.o)
 
@@ -21,10 +22,13 @@ $(NAME): $(OBJS)
 bonus : $(BONUS_NAME)
 
 $(BONUS_NAME) : $(OBJS_BONUS) ./Libft/libft.a
-	$(CC) $(CFLAGS) $(OBJS_BONUS) ./Libft/libft.a -o $(BONUS_NAME)
+		$(CC) $(CFLAGS) $(OBJS_BONUS) ./Libft/libft.a -o $(BONUS_NAME)
+
+%.o : %.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
 ./Libft/libft.a:
-	$(MK) -C ./Libft
+		$(MK) -C ./Libft
 
 clean:
 		$(MK) clean -C ./Libft

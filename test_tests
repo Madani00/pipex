@@ -3,7 +3,7 @@
 - when you pass path = "." , "./" , "/" . execve(path, cmd1_op, env) the function fails so no need to handle it
  ./pipex /dev/stdin "cat" "wc -l" /dev/stdout
  ./pipex file1 "echo 'hello world'" "grep hello" file2
- ./pipex /dev/random cat "head -n 5" file2  
+ ./pipex /dev/random cat "head -n 5" file2
  ./pipex file1 "sleep 3" "sleep 1" file2               <--- sleep 4 seconds
 
 # should not work
@@ -26,3 +26,6 @@ Expected: Print an error like command not found: invalidcmd and exit with status
 
 # double free
 PATH=.:$PATH ./pipex filein "./mad" "wc -l" fileout  (FIX IT: ))
+
+# bonus
+ ./bpipex here_doc abc "cat" "grep hi" uniq sort  output.txt
