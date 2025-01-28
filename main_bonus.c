@@ -6,7 +6,7 @@
 /*   By: eamchart <eamchart@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 21:29:13 by eamchart          #+#    #+#             */
-/*   Updated: 2025/01/27 16:25:41 by eamchart         ###   ########.fr       */
+/*   Updated: 2025/01/28 21:53:52 by eamchart         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,7 +121,7 @@ int handle_doc(char *limiter)
 	return fds[0];
 }
 
-void apply_command(char *cmd, char **env, int read_fd, int out_fd)
+int apply_command(char *cmd, char **env, int read_fd, int out_fd)
 {
 	int pid;
 
@@ -135,7 +135,22 @@ void apply_command(char *cmd, char **env, int read_fd, int out_fd)
 	}
 	close(read_fd);
 	close(out_fd);
-	wait(NULL);
+	//wait(NULL); // mm w it program works
+	return pid;
+}
+
+
+void	waiting_process(int pid)
+{
+	int	exit_cmd;
+waitpid(pid, &exit_cmd, 0);
+	// if (waitpid(pid, &exit_cmd, 0) == -1)
+	// 	error_message("Error waitpid() failed: \n", 0);
+	if (WEXITSTATUS(exit_cmd) != 0)
+	{
+		exit(WEXITSTATUS(exit_cmd));
+	}
+	exit(0);
 }
 
 int	main(int argc, char *argv[], char **envp)
@@ -143,9 +158,11 @@ int	main(int argc, char *argv[], char **envp)
 
 	int index;
 	int		pipefds[2];
-	int last_file = open(argv[argc - 1], O_WRONLY | O_CREAT | O_APPEND, 0777);
+	int last_file;
 	int read_fd;
+	int pid;
 
+	last_file = open(argv[argc - 1], O_WRONLY | O_CREAT | O_APPEND, 0777);
 	if (argc >= 5)
 	{
 		if (ft_strncmp("here_doc", argv[1], 9) == 0)
@@ -157,6 +174,8 @@ int	main(int argc, char *argv[], char **envp)
 		{
 			index = 2;
 			read_fd = open(argv[1], O_RDONLY);
+			if (read_fd == -1)
+				error_message(" : No such file or directory", argv[1]);
 		}
 		while (index < argc - 2)
 		{
@@ -166,8 +185,9 @@ int	main(int argc, char *argv[], char **envp)
 			read_fd = pipefds[0];
 			index++;
 		}
-		apply_command(argv[index], envp, read_fd, last_file);
+		pid = apply_command(argv[index], envp, read_fd, last_file);
 		close(last_file);
+		waiting_process(pid);
 	}
 	else
 		error_message("try: ./bpipex  cmd1 cmd2 cmd3 .. file\n", 0);
