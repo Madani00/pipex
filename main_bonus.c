@@ -6,7 +6,7 @@
 /*   By: eamchart <eamchart@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 21:29:13 by eamchart          #+#    #+#             */
-/*   Updated: 2025/01/28 21:53:52 by eamchart         ###   ########.fr       */
+/*   Updated: 2025/01/28 22:02:03 by eamchart         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,19 +78,6 @@ void	exe(char *cmd, char **env)
 	}
 }
 
-void	first_cmd(char **env, char *cmd1)
-{
-	// close(pipefds[0]);
-	// if (dup2(file1, STDIN_FILENO) == -1)
-	// 	ft_putstr_fd("Error dup2() cmd1 failed: \n", 2);
-	// if (dup2(pipefds[1], STDOUT_FILENO) == -1)
-	// 	ft_putstr_fd("Error dup2() cmd1 failed: \n", 2);
-	// close(file1);        // we duplicate stdin so we dont need file1 anymore
-	// close(pipefds[1]);
-	if (check_spaces(cmd1))
-		exit(127);
-	exe(cmd1, env);
-}
 
 int handle_doc(char *limiter)
 {
@@ -131,6 +118,8 @@ int apply_command(char *cmd, char **env, int read_fd, int out_fd)
 	{
 		dup2(read_fd, 0);
 		dup2(out_fd, 1);
+		if (check_spaces(cmd))
+			exit(127);
 		exe(cmd, env);
 	}
 	close(read_fd);
