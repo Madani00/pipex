@@ -6,7 +6,7 @@
 /*   By: eamchart <eamchart@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 21:29:13 by eamchart          #+#    #+#             */
-/*   Updated: 2025/01/28 22:02:03 by eamchart         ###   ########.fr       */
+/*   Updated: 2025/01/29 11:11:48 by eamchart         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,8 @@ void	exe(char *cmd, char **env)
 	char	**cmd1_op;
 	char	*path;
 
+	if (check_spaces(cmd))
+		exit(127);
 	cmd1_op = ft_split(cmd, ' ');
 	path = get_path(cmd1_op[0], env);
 	if (!path)
@@ -78,15 +80,15 @@ void	exe(char *cmd, char **env)
 	}
 }
 
-
-int handle_doc(char *limiter)
+int	handle_doc(char *limiter, int *index)
 {
-	int fds[2];
-	int pid;
-	char *line;
+	int		fds[2];
+	int		pid;
+	char	*line;
 
 	pipe(fds);
 	pid = fork();
+	*index = 3;
 	if (pid == 0)
 	{
 		close(fds[0]);
@@ -105,36 +107,32 @@ int handle_doc(char *limiter)
 		}
 	}
 	close(fds[1]);
-	return fds[0];
+	return (fds[0]);
 }
 
-int apply_command(char *cmd, char **env, int read_fd, int out_fd)
+int	apply_command(char *cmd, char **env, int read_fd, int out_fd)
 {
-	int pid;
+	int	pid;
 
 	pid = fork();
-
 	if (pid == 0)
 	{
-		dup2(read_fd, 0);
-		dup2(out_fd, 1);
-		if (check_spaces(cmd))
-			exit(127);
+		if (dup2(read_fd, 0) == -1 || dup2(out_fd, 1) == -1)
+			ft_putstr_fd("Error dup2() failed: \n", 2);
 		exe(cmd, env);
 	}
 	close(read_fd);
 	close(out_fd);
 	//wait(NULL); // mm w it program works
-	return pid;
+	return (pid);
 }
-
 
 void	waiting_process(int pid)
 {
 	int	exit_cmd;
-waitpid(pid, &exit_cmd, 0);
-	// if (waitpid(pid, &exit_cmd, 0) == -1)
-	// 	error_message("Error waitpid() failed: \n", 0);
+
+	if (waitpid(pid, &exit_cmd, 0) == -1)
+		error_message("Error waitpid() failed: \n", 0);
 	if (WEXITSTATUS(exit_cmd) != 0)
 	{
 		exit(WEXITSTATUS(exit_cmd));
@@ -142,36 +140,45 @@ waitpid(pid, &exit_cmd, 0);
 	exit(0);
 }
 
+int	open_file(char *file1, int *index)
+{
+	int	read_fd;
+
+	*index = 2;
+	read_fd = open(file1, O_RDONLY);
+	if (read_fd == -1)
+		error_message(" : No such file or directory", file1);
+	return (read_fd);
+}
+
+int pipe_exe(char *cmd, char **env, int read_fd)
+{
+	int	pipefds[2];
+
+	if (pipe(pipefds) == -1)
+		error_message("Error pipe() failed: \n", 0);
+	apply_command(cmd, env, read_fd, pipefds[1]);
+	close(pipefds[1]);
+	return pipefds[0];
+}
+
 int	main(int argc, char *argv[], char **envp)
 {
-
-	int index;
-	int		pipefds[2];
-	int last_file;
-	int read_fd;
-	int pid;
+	int	index;
+	int	last_file;
+	int	read_fd;
+	int	pid;
 
 	last_file = open(argv[argc - 1], O_WRONLY | O_CREAT | O_APPEND, 0777);
 	if (argc >= 5)
 	{
 		if (ft_strncmp("here_doc", argv[1], 9) == 0)
-		{
-			index = 3;
-			read_fd = handle_doc(argv[2]);
-		}
+			read_fd = handle_doc(argv[2], &index);
 		else
-		{
-			index = 2;
-			read_fd = open(argv[1], O_RDONLY);
-			if (read_fd == -1)
-				error_message(" : No such file or directory", argv[1]);
-		}
+			read_fd = open_file(argv[1], &index);
 		while (index < argc - 2)
 		{
-			pipe(pipefds);
-			apply_command(argv[index], envp, read_fd, pipefds[1]);
-			//close(pipefds[1]);
-			read_fd = pipefds[0];
+			read_fd = pipe_exe(argv[index], envp, read_fd);
 			index++;
 		}
 		pid = apply_command(argv[index], envp, read_fd, last_file);
