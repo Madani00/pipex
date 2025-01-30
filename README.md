@@ -256,7 +256,8 @@ int main(int argc, char **argv)
 ```
 ---
 ## access
-- you can move `ls` command to you diro ,and test this 
+- you can move `ls` command to you diro ,and test this
+- `access()` does NOT search $PATH. It only looks in the current directory unless you specify an absolute or relative path.
 ```bash
 int main()
 {
