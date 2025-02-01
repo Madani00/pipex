@@ -14,6 +14,11 @@
 
 # attention
 - PATH=NULL ./pipex filein "cat" "cat" fileout  (this way you are just putting the 'NULL' in the PATH variable, it never sets the path to empty)
+- valgrind ./pipex filein " " "ldfs" /dev/stdout      (if there is space in command i need to exit inside the first_command)
+
+# exit 126   ( command was found but could not be executed )
+- valgrind ./pipex filein "cat" "./mad" /dev/stdout   (create mad to see the "not executable message")
+-  ./pipex filein cat "/home/eamchart/Desktop/pipx/pipex" /dev/stdout
 
 
 # mmm

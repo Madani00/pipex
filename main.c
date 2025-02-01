@@ -6,7 +6,7 @@
 /*   By: eamchart <eamchart@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 19:27:41 by eamchart          #+#    #+#             */
-/*   Updated: 2025/01/29 13:33:40 by eamchart         ###   ########.fr       */
+/*   Updated: 2025/02/01 20:56:49 by eamchart         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,17 +35,17 @@ void	exe(char *cmd, char **env)
 	path = get_path(cmd1_op[0], env);
 	if (!path)
 	{
-		ft_putstr_fd(cmd1_op[0], 2);
-		ft_putstr_fd(": command path not found\n", 2);
+		ft_puts(cmd1_op[0], 2);
+		ft_putstr_fd(": command path not found", 2);
 		free_args(cmd1_op);
 		exit(127);
 	}
 	if (execve(path, cmd1_op, env) == -1)
 	{
-		ft_putstr_fd(cmd1_op[0], 2);
-		ft_putstr_fd(" : command not executable\n", 2);
+		ft_puts(cmd1_op[0], 2);
+		ft_putstr_fd(" : Permission denied", 2);
 		free_args(cmd1_op);
-		exit(127);
+		exit(126);
 	}
 }
 
@@ -53,9 +53,9 @@ void	first_cmd(char **env, char *cmd1, int file1, int *pipefds)
 {
 	close(pipefds[0]);
 	if (dup2(file1, STDIN_FILENO) == -1)
-		ft_putstr_fd("Error dup2() cmd1 failed: \n", 2);
+		ft_putstr_fd("Error dup2() cmd1 failed:", 2);
 	if (dup2(pipefds[1], STDOUT_FILENO) == -1)
-		ft_putstr_fd("Error dup2() cmd1 failed: \n", 2);
+		ft_putstr_fd("Error dup2() cmd1 failed:", 2);
 	close(file1);
 	close(pipefds[1]);
 	if (check_spaces(cmd1))
@@ -67,9 +67,9 @@ void	second_cmd(char **env, char *cmd2, int file2, int *pipefds)
 {
 	close(pipefds[1]);
 	if (dup2(pipefds[0], STDIN_FILENO) == -1)
-		ft_putstr_fd("Error dup2() cmd2 failed: \n", 2);
+		ft_putstr_fd("Error dup2() cmd2 failed:", 2);
 	if (dup2(file2, STDOUT_FILENO) == -1)
-		ft_putstr_fd("Error dup2() cmd2 failed: \n", 2);
+		ft_putstr_fd("Error dup2() cmd2 failed:", 2);
 	close(file2);
 	close(pipefds[0]);
 	exe(cmd2, env);
@@ -86,12 +86,12 @@ int	main(int argc, char *argv[], char **envp)
 	args_validate(argc, argv);
 	file1 = open(argv[1], O_RDONLY);
 	if (file1 == -1)
-		error_message(" : No such file or directory\n", argv[1]);
+		error_message(" : No such file or directory", argv[1]);
 	file2 = open(argv[4], O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (file2 == -1)
-		error_message(" : No such file or directory\n", argv[4]);
+		error_message(" : No such file or directory", argv[4]);
 	if (pipe(pipefds) == -1)
-		error_message("Error pipe() failed: \n", 0);
+		error_message("Error pipe() failed:", 0);
 	pid_1 = fork();
 	if (pid_1 == 0)
 		first_cmd(envp, argv[2], file1, pipefds);
@@ -99,7 +99,7 @@ int	main(int argc, char *argv[], char **envp)
 	if (pid_2 == 0)
 		second_cmd(envp, argv[3], file2, pipefds);
 	if (pid_1 == -1 || pid_2 == -1)
-		error_message("Error fork() failed: \n", 0);
+		error_message("Error fork() failed:", 0);
 	waiting_process(pid_1, pid_2, pipefds);
 	return (0);
 }

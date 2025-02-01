@@ -6,7 +6,7 @@
 /*   By: eamchart <eamchart@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 19:52:25 by eamchart          #+#    #+#             */
-/*   Updated: 2025/01/29 11:22:03 by eamchart         ###   ########.fr       */
+/*   Updated: 2025/02/01 17:33:09 by eamchart         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,18 +47,18 @@ void	args_validate(int argc, char **av)
 {
 	if (argc != 5)
 	{
-		ft_putstr_fd("not enough arguments\n", 2);
+		ft_putstr_fd("not enough arguments", 2);
 		exit(127);
 	}
 	if (check_spaces(av[2]))
 	{
-		ft_putstr_fd(av[2], 2);
-		ft_putstr_fd(" : command not found\n", 2);
+		ft_puts(av[2], 2);
+		ft_putstr_fd(" : command not found", 2);
 	}
 	if (check_spaces(av[3]))
 	{
-		ft_putstr_fd(av[3], 2);
-		ft_putstr_fd(" : command not found\n", 2);
+		ft_puts(av[3], 2);
+		ft_putstr_fd(" : command not found", 2);
 		exit(127);
 	}
 }

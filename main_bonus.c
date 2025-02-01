@@ -6,79 +6,11 @@
 /*   By: eamchart <eamchart@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 21:29:13 by eamchart          #+#    #+#             */
-/*   Updated: 2025/02/01 16:03:34 by eamchart         ###   ########.fr       */
+/*   Updated: 2025/02/01 18:06:46 by eamchart         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex_bonus.h"
-
-char	*get_path2(char *cmd, char **env)
-{
-	char	**all_paths;
-	char	*s_cmd;
-	int		index;
-	char	*exe_cmd;
-	char	*path_env;
-
-	path_env = getenv_path(env);
-	if (!path_env || ft_strchr(cmd, '/'))
-		return (NULL);
-	all_paths = ft_split(path_env, ':');
-	s_cmd = ft_strjoin("/", cmd);
-	index = 0;
-	while (all_paths && all_paths[index])
-	{
-		exe_cmd = ft_strjoin(all_paths[index], s_cmd);
-		if (access(exe_cmd, X_OK | F_OK) == 0)
-		{
-			free_all(all_paths, s_cmd);
-			return (exe_cmd);
-		}
-		free(exe_cmd);
-		index++;
-	}
-	free_all(all_paths, s_cmd);
-	return (NULL);
-}
-
-char	*get_path(char *cmd, char **env)
-{
-	char	*path;
-
-	if (access(cmd, X_OK) == 0 && ft_strchr(cmd, '/'))
-		return (cmd);
-	else if (access(cmd, X_OK) == 0 && !getenv_path(env))
-		return (NULL);
-	path = get_path2(cmd, env);
-	if (!path)
-		return (NULL);
-	return (path);
-}
-
-void	exe(char *cmd, char **env)
-{
-	char	**cmd1_op;
-	char	*path;
-
-	if (check_spaces(cmd))
-		exit(127);
-	cmd1_op = ft_split(cmd, ' ');
-	path = get_path(cmd1_op[0], env);
-	if (!path)
-	{
-		ft_putstr_fd(cmd1_op[0], 2);
-		ft_putstr_fd(": command path not found\n", 2);
-		free_args(cmd1_op);
-		exit(127);
-	}
-	if (execve(path, cmd1_op, env) == -1)
-	{
-		ft_putstr_fd(cmd1_op[0], 2);
-		ft_putstr_fd(" : command not executable\n", 2);
-		free_args(cmd1_op);
-		exit(127);
-	}
-}
 
 void	open_file(char *file1, int *index)
 {
@@ -91,88 +23,58 @@ void	open_file(char *file1, int *index)
 	dup2(read_fd, 0);
 }
 
-void	apply(char *cmd, char **env, int out_fd)
+void	last_cmd(char *cmd, char **env, char *last_file)
 {
 	pid_t	pid;
-	int	exit_cmd;
+	int		exit_cmd;
+	int		out_fd;
 
+	out_fd = open(last_file, O_WRONLY | O_CREAT | O_APPEND, 0777);
+	if (out_fd == -1)
+		error_message(" : No such file or directory", last_file);
 	pid = fork();
+	if (pid == -1)
+		error_message("Error pipe() failed:", 0);
 	if (pid == 0)
 	{
 		if (dup2(out_fd, STDOUT_FILENO) == -1)
-			ft_putstr_fd("Error how 2 dup2() last failed: \n", 2);
+			ft_putstr_fd("Error how 2 dup2() last failed:", 2);
 		close(out_fd);
 		exe(cmd, env);
 	}
 	close(out_fd);
 	if (waitpid(pid, &exit_cmd, 0) == -1)
-		error_message("Error waitpid() failed: \n", 0);
+		error_message("Error waitpid() failed:", 0);
 	if (WEXITSTATUS(exit_cmd) != 0)
-	{
 		exit(WEXITSTATUS(exit_cmd));
-	}
 	exit(EXIT_SUCCESS);
 }
 
-void pipe_exe(char *cmd, char **env)
+void	pipe_exe(char *cmd, char **env)
 {
-	int	pipefds[2];
-	pid_t pid;
+	int		pipefds[2];
+	pid_t	pid;
 
 	if (pipe(pipefds) == -1)
-		error_message("Error pipe() failed: \n", 0);
+		error_message("Error pipe() failed:", 0);
 	pid = fork();
 	if (pid == 0)
 	{
 		close(pipefds[0]);
 		if (dup2(pipefds[1], 1) == -1)
-			ft_putstr_fd("Error how 22 dup2() failed: \n", 2);
+			ft_putstr_fd("Error how 22 dup2() failed:", 2);
 		close(pipefds[1]);
 		exe(cmd, env);
 	}
 	close(pipefds[1]);
 	dup2(pipefds[0], 0);
 	close(pipefds[0]);
-	//wait(NULL);
-}
-
-void	handle_doc(char *limiter, int *index)
-{
-	int		fds[2];
-	int		pid;
-	char	*line;
-
-	*index = 3;
-	pipe(fds);
-	pid = fork();
-	if (pid == 0)
-	{
-		close(fds[0]);
-		line = get_next_line(0);
-		while (line)
-		{
-			if (ft_strncmp(line, limiter, ft_strlen(limiter)) == 0)
-			{
-				free(line);
-				close(fds[1]);
-				exit(0);
-			}
-			write(fds[1], line, ft_strlen(line));
-			free(line);
-			line = get_next_line(0);
-		}
-	}
-	close(fds[1]);
-	if (dup2(fds[0], 0) == -1)
-		ft_putstr_fd("Error dup2() in here doc failed: \n", 2);
-	wait(NULL);
 }
 
 int	main(int argc, char *argv[], char **envp)
 {
 	int	index;
-	int	last_file;
-	last_file = open(argv[argc - 1], O_WRONLY | O_CREAT | O_APPEND, 0777);
+
 	if (argc >= 5)
 	{
 		if (ft_strncmp("here_doc", argv[1], 9) == 0)
@@ -186,11 +88,10 @@ int	main(int argc, char *argv[], char **envp)
 			pipe_exe(argv[index], envp);
 			index++;
 		}
-		apply(argv[index], envp, last_file);
+		last_cmd(argv[index], envp, argv[argc - 1]);
 		wait(NULL);
 	}
 	else
-		error_message("try: ./bpipex  cmd1 cmd2 cmd3 .. file\n", 0);
+		error_message("try: ./bpipex  cmd1 cmd2 cmd3 .. file", 0);
 	return (0);
 }
-

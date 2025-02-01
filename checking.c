@@ -6,7 +6,7 @@
 /*   By: eamchart <eamchart@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/19 15:37:29 by eamchart          #+#    #+#             */
-/*   Updated: 2025/01/19 15:38:23 by eamchart         ###   ########.fr       */
+/*   Updated: 2025/02/01 21:51:14 by eamchart         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int	check_spaces(char *str)
 
 	i = 0;
 	if (str[0] == '\0')
-		return (1);
+		return (2);
 	while (str[i])
 	{
 		if (str[i] == ' ')
@@ -33,18 +33,25 @@ void	args_validate(int argc, char **av)
 {
 	if (argc != 5)
 	{
-		ft_putstr_fd("not enough arguments\n", 2);
+		ft_putstr_fd("not enough arguments", 2);
 		exit(127);
 	}
-	if (check_spaces(av[2]))
+	if (check_spaces(av[2]) == 1)
 	{
-		ft_putstr_fd(av[2], 2);
-		ft_putstr_fd(" : command not found\n", 2);
+		ft_puts(av[2], 2);
+		ft_putstr_fd(" : command not found", 2);
+	}
+	if (check_spaces(av[2]) == 2)
+		ft_putstr_fd("permission denied:", 2);
+	if (check_spaces(av[3]) == 2)
+	{
+		ft_putstr_fd("permission denied:", 2);
+		exit(126);
 	}
 	if (check_spaces(av[3]))
 	{
-		ft_putstr_fd(av[3], 2);
-		ft_putstr_fd(" : command not found\n", 2);
+		ft_puts(av[3], 2);
+		ft_putstr_fd(" : command not found", 2);
 		exit(127);
 	}
 }

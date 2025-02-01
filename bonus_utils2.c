@@ -6,7 +6,7 @@
 /*   By: eamchart <eamchart@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/29 11:19:44 by eamchart          #+#    #+#             */
-/*   Updated: 2025/01/30 15:55:43 by eamchart         ###   ########.fr       */
+/*   Updated: 2025/02/01 17:33:31 by eamchart         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,53 +70,23 @@ void	exe(char *cmd, char **env)
 
 	if (check_spaces(cmd))
 	{
-		ft_putstr_fd(": command path not found\n", 2);
+		ft_putstr_fd(": command path not found", 2);
 		exit(127);
 	}
 	cmd1_op = ft_split(cmd, ' ');
 	path = get_path(cmd1_op[0], env);
 	if (!path)
 	{
-		ft_putstr_fd(cmd1_op[0], 2);
-		ft_putstr_fd(": command path not found\n", 2);
+		ft_puts(cmd1_op[0], 2);
+		ft_putstr_fd(": command path not found", 2);
 		free_args(cmd1_op);
 		exit(127);
 	}
 	if (execve(path, cmd1_op, env) == -1)
 	{
-		ft_putstr_fd(cmd1_op[0], 2);
-		ft_putstr_fd(" : command not executable\n", 2);
+		ft_puts(cmd1_op[0], 2);
+		ft_putstr_fd(" : command not executable", 2);
 		free_args(cmd1_op);
 		exit(127);
 	}
-}
-
-int	handle_doc(char *limiter, int *index)
-{
-	int		fds[2];
-	int		pid;
-	char	*line;
-
-	if (pipe(fds) == -1)
-		error_message("Error pipe() failed: \n", 0);
-	pid = fork();
-	*index = 3;
-	if (pid == 0)
-	{
-		close(fds[0]);
-		line = get_next_line(0);
-		while (line)
-		{
-			if (ft_strncmp(line, limiter, ft_strlen(limiter)) == 0)
-			{
-				free(line);
-				close(fds[1]);
-				exit(0);
-			}
-			write(fds[1], line, ft_strlen(line));
-			free(line);
-			line = get_next_line(0);
-		}
-	}
-	return (close(fds[1]), fds[0]);
 }
