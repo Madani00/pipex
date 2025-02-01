@@ -6,7 +6,7 @@
 /*   By: eamchart <eamchart@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/25 11:00:48 by eamchart          #+#    #+#             */
-/*   Updated: 2025/01/26 19:16:38 by eamchart         ###   ########.fr       */
+/*   Updated: 2025/01/29 13:53:41 by eamchart         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,11 +56,33 @@ char	*get_next_line(int fd)
 		if (readd < 0)
 			return (free(file_data), free(s_buffer), s_buffer = NULL, NULL);
 		file_data[readd] = '\0';
-		s_buffer = ft_strjoin(s_buffer, file_data);
+		s_buffer = join(s_buffer, file_data);
 	}
 	if (*s_buffer == '\0' && readd == 0)
 		return (free(s_buffer), s_buffer = NULL, free(file_data), NULL);
 	save = fetch_line(s_buffer);
 	free(s_buffer);
 	return (s_buffer = NULL, free(file_data), save);
+}
+
+char	*join(char *s1, char *s2)
+{
+	char	*new;
+	size_t	i;
+	size_t	j;
+
+	if (!s1)
+		return (ft_strdup(s2));
+	new = malloc(ft_strlen(s1) + ft_strlen(s2) + 1);
+	if (!new)
+		return (free(s1), NULL);
+	i = -1;
+	while (s1[++i])
+		new[i] = s1[i];
+	j = 0;
+	while (s2[j])
+		new[i++] = s2[j++];
+	new[i] = '\0';
+	free(s1);
+	return (new);
 }

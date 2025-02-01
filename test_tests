@@ -28,10 +28,14 @@ Expected: Print an error like command not found: invalidcmd and exit with status
 PATH=.:$PATH ./pipex filein "./mad" "wc -l" fileout  (FIX IT: ))
 
 # bonus
- ./bpipex here_doc abc "cat" "grep hi" uniq sort  output.txt
+./bpipex here_doc abc "cat" "grep hi" uniq sort  output.txt
 ./bpipex here_doc RANDOM "head -c 10 /dev/random" "hexdump" uniq sort output.txt
 ./bpipex here_doc BLOCK "cat /dev/random" "head -c 10" uniq sort output.txt
 ./bpipex input.txt "grep bar" "sort" "head -n 5" output.txt
 ./bpipex /dev/null "cat" "wc -l" output.txt
 ./bpipex input.txt "cat" "grep foo" "sort" "uniq" "head -n 10" output.txt
 ./bpipex filein "cat" "xargs echo" output.txt
+./bpipex filein "/home/eamchart/Desktop/pipex" "/ls" /dev/stdout  (command not executable)
+./bpipex filein "ls" "cat" "grep hi" output.txt           (just to test someone confusion lol )
+
+./bpipex /dev/random cat "head -n 5" output.txt       NOT WORKING

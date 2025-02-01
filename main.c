@@ -6,42 +6,11 @@
 /*   By: eamchart <eamchart@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 19:27:41 by eamchart          #+#    #+#             */
-/*   Updated: 2025/01/26 19:28:37 by eamchart         ###   ########.fr       */
+/*   Updated: 2025/01/29 13:33:40 by eamchart         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
-
-char	*get_path2(char *cmd, char **env)
-{
-	char	**all_paths;
-	char	*s_cmd;
-	int		index;
-	char	*exe_cmd;
-	char	*path_env;
-
-	path_env = getenv_path(env);
-	if (!path_env || ft_strchr(cmd, '/'))
-		return (NULL);
-	all_paths = ft_split(path_env, ':');
-	s_cmd = ft_strjoin("/", cmd);
-	index = 0;
-	while (all_paths && all_paths[index])
-	{
-		exe_cmd = ft_strjoin(all_paths[index], s_cmd);
-		if (access(exe_cmd, X_OK | F_OK) == 0)
-		{
-			free_all(all_paths, s_cmd);
-			return (exe_cmd);
-		}
-		free(exe_cmd);
-		index++;
-	}
-	free_all(all_paths, s_cmd);
-	return (NULL);
-}
-
-
 
 char	*get_path(char *cmd, char **env)
 {
@@ -87,18 +56,17 @@ void	first_cmd(char **env, char *cmd1, int file1, int *pipefds)
 		ft_putstr_fd("Error dup2() cmd1 failed: \n", 2);
 	if (dup2(pipefds[1], STDOUT_FILENO) == -1)
 		ft_putstr_fd("Error dup2() cmd1 failed: \n", 2);
-	close(file1);        // we duplicate stdin so we dont need file1 anymore
-	close(pipefds[1]); // i added this
+	close(file1);
+	close(pipefds[1]);
 	if (check_spaces(cmd1))
 		exit(127);
 	exe(cmd1, env);
-
 }
 
 void	second_cmd(char **env, char *cmd2, int file2, int *pipefds)
 {
 	close(pipefds[1]);
-	if(dup2(pipefds[0], STDIN_FILENO) == -1)
+	if (dup2(pipefds[0], STDIN_FILENO) == -1)
 		ft_putstr_fd("Error dup2() cmd2 failed: \n", 2);
 	if (dup2(file2, STDOUT_FILENO) == -1)
 		ft_putstr_fd("Error dup2() cmd2 failed: \n", 2);

@@ -6,7 +6,7 @@
 /*   By: eamchart <eamchart@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/14 18:45:01 by eamchart          #+#    #+#             */
-/*   Updated: 2025/01/23 21:59:02 by eamchart         ###   ########.fr       */
+/*   Updated: 2025/01/29 13:34:13 by eamchart         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,5 +28,6 @@ int		check_spaces(char *str);
 void	args_validate(int argc, char **av);
 void	error_message(char *message, char *file);
 char	*getenv_path(char **envp);
+char	*get_path2(char *cmd, char **env);
 
 #endif

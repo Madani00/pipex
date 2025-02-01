@@ -6,7 +6,7 @@
 /*   By: eamchart <eamchart@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/23 12:33:51 by eamchart          #+#    #+#             */
-/*   Updated: 2025/01/17 10:53:37 by eamchart         ###   ########.fr       */
+/*   Updated: 2025/01/29 13:52:21 by eamchart         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,6 @@ char	*ft_strjoin(char *s1, char *s2)
 	while (s2[j])
 		new[i++] = s2[j++];
 	new[i] = '\0';
-	//free(s1);
+	
 	return (new);
 }

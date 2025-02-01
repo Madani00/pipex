@@ -1,16 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main_bonus.c                                       :+:      :+:    :+:   */
+/*   bonus_utils2.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: eamchart <eamchart@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/24 21:29:13 by eamchart          #+#    #+#             */
-/*   Updated: 2025/02/01 16:03:34 by eamchart         ###   ########.fr       */
+/*   Created: 2025/01/29 11:19:44 by eamchart          #+#    #+#             */
+/*   Updated: 2025/01/30 15:55:43 by eamchart         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex_bonus.h"
+
+void	error_message(char *message, char *file)
+{
+	if (file)
+		ft_putstr_fd(file, 2);
+	ft_putstr_fd(message, 2);
+	exit(1);
+}
 
 char	*get_path2(char *cmd, char **env)
 {
@@ -61,7 +69,10 @@ void	exe(char *cmd, char **env)
 	char	*path;
 
 	if (check_spaces(cmd))
+	{
+		ft_putstr_fd(": command path not found\n", 2);
 		exit(127);
+	}
 	cmd1_op = ft_split(cmd, ' ');
 	path = get_path(cmd1_op[0], env);
 	if (!path)
@@ -80,71 +91,16 @@ void	exe(char *cmd, char **env)
 	}
 }
 
-void	open_file(char *file1, int *index)
-{
-	int	read_fd;
-
-	*index = 2;
-	read_fd = open(file1, O_RDONLY);
-	if (read_fd == -1)
-		error_message(" : No such file or directory", file1);
-	dup2(read_fd, 0);
-}
-
-void	apply(char *cmd, char **env, int out_fd)
-{
-	pid_t	pid;
-	int	exit_cmd;
-
-	pid = fork();
-	if (pid == 0)
-	{
-		if (dup2(out_fd, STDOUT_FILENO) == -1)
-			ft_putstr_fd("Error how 2 dup2() last failed: \n", 2);
-		close(out_fd);
-		exe(cmd, env);
-	}
-	close(out_fd);
-	if (waitpid(pid, &exit_cmd, 0) == -1)
-		error_message("Error waitpid() failed: \n", 0);
-	if (WEXITSTATUS(exit_cmd) != 0)
-	{
-		exit(WEXITSTATUS(exit_cmd));
-	}
-	exit(EXIT_SUCCESS);
-}
-
-void pipe_exe(char *cmd, char **env)
-{
-	int	pipefds[2];
-	pid_t pid;
-
-	if (pipe(pipefds) == -1)
-		error_message("Error pipe() failed: \n", 0);
-	pid = fork();
-	if (pid == 0)
-	{
-		close(pipefds[0]);
-		if (dup2(pipefds[1], 1) == -1)
-			ft_putstr_fd("Error how 22 dup2() failed: \n", 2);
-		close(pipefds[1]);
-		exe(cmd, env);
-	}
-	close(pipefds[1]);
-	dup2(pipefds[0], 0);
-	close(pipefds[0]);
-	//wait(NULL);
-}
-
-void	handle_doc(char *limiter, int *index)
+int	handle_doc(char *limiter, int *index)
 {
 	int		fds[2];
 	int		pid;
 	char	*line;
 
-	*index = 3;
-	pipe(fds);
+	if (pipe(fds) == -1)
+		error_message("Error pipe() failed: \n", 0);
 	pid = fork();
+	*index = 3;
 	if (pid == 0)
 	{
 		close(fds[0]);
@@ -162,35 +118,5 @@ void	handle_doc(char *limiter, int *index)
 			line = get_next_line(0);
 		}
 	}
-	close(fds[1]);
-	if (dup2(fds[0], 0) == -1)
-		ft_putstr_fd("Error dup2() in here doc failed: \n", 2);
-	wait(NULL);
+	return (close(fds[1]), fds[0]);
 }
-
-int	main(int argc, char *argv[], char **envp)
-{
-	int	index;
-	int	last_file;
-	last_file = open(argv[argc - 1], O_WRONLY | O_CREAT | O_APPEND, 0777);
-	if (argc >= 5)
-	{
-		if (ft_strncmp("here_doc", argv[1], 9) == 0)
-		{
-			handle_doc(argv[2], &index);
-		}
-		else
-			open_file(argv[1], &index);
-		while (index < argc - 2)
-		{
-			pipe_exe(argv[index], envp);
-			index++;
-		}
-		apply(argv[index], envp, last_file);
-		wait(NULL);
-	}
-	else
-		error_message("try: ./bpipex  cmd1 cmd2 cmd3 .. file\n", 0);
-	return (0);
-}
-

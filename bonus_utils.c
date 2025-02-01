@@ -6,12 +6,11 @@
 /*   By: eamchart <eamchart@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 19:52:25 by eamchart          #+#    #+#             */
-/*   Updated: 2025/01/28 20:23:09 by eamchart         ###   ########.fr       */
+/*   Updated: 2025/01/29 11:22:03 by eamchart         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex_bonus.h"
-
 
 char	*getenv_path(char **envp)
 {
@@ -82,12 +81,3 @@ void	free_all(char **args, char *p1)
 	free_args(args);
 	free(p1);
 }
-
-void	error_message(char *message, char *file)
-{
-	if (file)
-		ft_putstr_fd(file, 2);
-	ft_putstr_fd(message, 2);
-	exit(1);
-}
-
