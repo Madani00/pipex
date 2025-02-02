@@ -6,7 +6,7 @@
 /*   By: eamchart <eamchart@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/29 11:19:44 by eamchart          #+#    #+#             */
-/*   Updated: 2025/02/01 17:33:31 by eamchart         ###   ########.fr       */
+/*   Updated: 2025/02/02 16:20:27 by eamchart         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,10 +70,11 @@ void	exe(char *cmd, char **env)
 
 	if (check_spaces(cmd))
 	{
-		ft_putstr_fd(": command path not found", 2);
+		ft_putstr_fd(": command not found", 2);
 		exit(127);
 	}
 	cmd1_op = ft_split(cmd, ' ');
+	check_dots(cmd1_op);
 	path = get_path(cmd1_op[0], env);
 	if (!path)
 	{
@@ -85,8 +86,24 @@ void	exe(char *cmd, char **env)
 	if (execve(path, cmd1_op, env) == -1)
 	{
 		ft_puts(cmd1_op[0], 2);
-		ft_putstr_fd(" : command not executable", 2);
+		ft_putstr_fd(" : Permission denied", 2);
 		free_args(cmd1_op);
+		exit(126);
+	}
+}
+
+void	check_dots(char **dots)
+{
+	if ((*dots[0] == '.' && (ft_strlen(*dots) == 1)))
+	{
+		ft_putstr_fd(" : command not found", 2);
+		free_args(dots);
+		exit(127);
+	}
+	if ((*dots[0] == '.' && (ft_strlen(*dots) == 2)))
+	{
+		ft_putstr_fd(" : command not found", 2);
+		free_args(dots);
 		exit(127);
 	}
 }

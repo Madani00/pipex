@@ -25,12 +25,17 @@
 - i had a problem with leaks in the first command, it was that when i have " " i pass it execve, i fix it with if it was that just exit
 -  PATH= :$PATH ./pipex filein "mad" "wjjh" fileout             <--- does not do anything mm why?
 
+valgrind ./pipex filein "." " " /dev/stdout             mmm first command does not print
+
 # hard to handle
 ./pipex file1 "invalidcmd" "wc -l" file2
 Expected: Print an error like command not found: invalidcmd and exit with status 127
 
-# double free
+# double free / memory leak
 PATH=.:$PATH ./pipex filein "./mad" "wc -l" fileout  (FIX IT: ))
+ valgrind ./pipex filein "/bin/cat" " . " fileout         mmmm memory leak (./usr/local/sbin/.  path2 returns this)
+valgrind ./pipex filein "dfdls" "ls" /dev/stdout            (if last command true , path = /usr/bin/ls needs to be freed)
+valgrind  ./pipex /dev/stdin "/" "ls" /dev/stdout         MMM /
 
 # bonus
 ./bpipex here_doc abc "cat" "grep hi" uniq sort  output.txt

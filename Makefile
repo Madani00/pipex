@@ -7,7 +7,7 @@ MK = make
 
 SRCS = main.c ft_free_error.c pipex_utils.c checking.c
 
-S_BONUS = main_bonus.c get_next_line.c bonus_utils.c bonus_utils2.c
+S_BONUS = main_bonus.c get_next_line.c bonus_utils.c bonus_utils2.c here_doc.c
 
 OBJS = $(SRCS:.c=.o)
 

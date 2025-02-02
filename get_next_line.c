@@ -6,7 +6,7 @@
 /*   By: eamchart <eamchart@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/25 11:00:48 by eamchart          #+#    #+#             */
-/*   Updated: 2025/01/29 13:53:41 by eamchart         ###   ########.fr       */
+/*   Updated: 2025/02/02 16:32:07 by eamchart         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,4 +85,17 @@ char	*join(char *s1, char *s2)
 	new[i] = '\0';
 	free(s1);
 	return (new);
+}
+
+int	openlast_file(int pick_file, char *last_file)
+{
+	int	out_fd;
+
+	if (pick_file == 3)
+		out_fd = open(last_file, O_WRONLY | O_CREAT | O_APPEND, 0777);
+	else
+		out_fd = open(last_file, O_WRONLY | O_CREAT | O_TRUNC, 0777);
+	if (out_fd == -1)
+		error_message(" : No such file or directory", last_file);
+	return (out_fd);
 }

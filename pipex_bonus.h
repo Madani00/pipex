@@ -6,7 +6,7 @@
 /*   By: eamchart <eamchart@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 22:16:11 by eamchart          #+#    #+#             */
-/*   Updated: 2025/02/01 16:21:31 by eamchart         ###   ########.fr       */
+/*   Updated: 2025/02/02 16:35:03 by eamchart         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,5 +41,7 @@ void	handle_doc(char *limiter, int *index);
 char	*get_path2(char *cmd, char **env);
 char	*get_path(char *cmd, char **env);
 void	exe(char *cmd, char **env);
+void	check_dots(char **dots);
+int		openlast_file(int pick_file, char *last_file);
 
 #endif

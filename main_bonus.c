@@ -6,7 +6,7 @@
 /*   By: eamchart <eamchart@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 21:29:13 by eamchart          #+#    #+#             */
-/*   Updated: 2025/02/01 22:27:24 by eamchart         ###   ########.fr       */
+/*   Updated: 2025/02/02 16:30:05 by eamchart         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,12 +29,7 @@ void	last_cmd(char *cmd, char **env, char *last_file, int pick_file)
 	int		exit_cmd;
 	int		out_fd;
 
-	if (pick_file == 3)
-		out_fd = open(last_file, O_WRONLY | O_CREAT | O_APPEND, 0777);
-	else
-		out_fd = open(last_file, O_WRONLY | O_CREAT | O_TRUNC, 0777);
-	if (out_fd == -1)
-		error_message(" : No such file or directory", last_file);
+	out_fd = openlast_file(pick_file, last_file);
 	pid = fork();
 	if (pid == -1)
 		error_message("Error pipe() failed:", 0);

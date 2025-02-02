@@ -56,7 +56,7 @@ void	args_validate(int argc, char **av)
 	}
 }
 
-void check_dots(char **dots)
+void	check_dots(char **dots)
 {
 	if ((*dots[0] == '.' && (ft_strlen(*dots) == 1)))
 	{
