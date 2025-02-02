@@ -6,7 +6,7 @@
 /*   By: eamchart <eamchart@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 19:27:41 by eamchart          #+#    #+#             */
-/*   Updated: 2025/02/01 20:56:49 by eamchart         ###   ########.fr       */
+/*   Updated: 2025/02/02 16:04:43 by eamchart         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ void	exe(char *cmd, char **env)
 	char	*path;
 
 	cmd1_op = ft_split(cmd, ' ');
+	check_dots(cmd1_op);
 	path = get_path(cmd1_op[0], env);
 	if (!path)
 	{
@@ -87,7 +88,7 @@ int	main(int argc, char *argv[], char **envp)
 	file1 = open(argv[1], O_RDONLY);
 	if (file1 == -1)
 		error_message(" : No such file or directory", argv[1]);
-	file2 = open(argv[4], O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	file2 = open(argv[4], O_WRONLY | O_CREAT | O_TRUNC, 0777);
 	if (file2 == -1)
 		error_message(" : No such file or directory", argv[4]);
 	if (pipe(pipefds) == -1)

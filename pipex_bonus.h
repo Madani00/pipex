@@ -6,7 +6,7 @@
 /*   By: eamchart <eamchart@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 22:16:11 by eamchart          #+#    #+#             */
-/*   Updated: 2025/01/29 13:54:14 by eamchart         ###   ########.fr       */
+/*   Updated: 2025/02/01 16:21:31 by eamchart         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ char	*allocation(int fd);
 char	*get_next_line(int fd);
 int		check_spaces(char *str);
 int		apply_command(char *cmd, char **env, int in_fd, int out_fd);
-int		handle_doc(char *limiter, int *index);
+void	handle_doc(char *limiter, int *index);
 char	*get_path2(char *cmd, char **env);
 char	*get_path(char *cmd, char **env);
 void	exe(char *cmd, char **env);

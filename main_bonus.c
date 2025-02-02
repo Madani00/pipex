@@ -6,7 +6,7 @@
 /*   By: eamchart <eamchart@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 21:29:13 by eamchart          #+#    #+#             */
-/*   Updated: 2025/02/01 18:06:46 by eamchart         ###   ########.fr       */
+/*   Updated: 2025/02/01 22:27:24 by eamchart         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,13 +23,16 @@ void	open_file(char *file1, int *index)
 	dup2(read_fd, 0);
 }
 
-void	last_cmd(char *cmd, char **env, char *last_file)
+void	last_cmd(char *cmd, char **env, char *last_file, int pick_file)
 {
 	pid_t	pid;
 	int		exit_cmd;
 	int		out_fd;
 
-	out_fd = open(last_file, O_WRONLY | O_CREAT | O_APPEND, 0777);
+	if (pick_file == 3)
+		out_fd = open(last_file, O_WRONLY | O_CREAT | O_APPEND, 0777);
+	else
+		out_fd = open(last_file, O_WRONLY | O_CREAT | O_TRUNC, 0777);
 	if (out_fd == -1)
 		error_message(" : No such file or directory", last_file);
 	pid = fork();
@@ -88,7 +91,7 @@ int	main(int argc, char *argv[], char **envp)
 			pipe_exe(argv[index], envp);
 			index++;
 		}
-		last_cmd(argv[index], envp, argv[argc - 1]);
+		last_cmd(argv[index], envp, argv[argc - 1], index);
 		wait(NULL);
 	}
 	else
