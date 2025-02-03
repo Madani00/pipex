@@ -276,7 +276,9 @@ int main()
 - The kernel creates the very first process (either init or its modern replacement like systemd) when the system boots.
 - A **program** is just a set of instructions stored on disk (like an .exe or .out file).
 - A **process** is what happens when the program is loaded into memory and executed.
-- returns (dup2(fds[0], 0))  <--- return the new file fd which is 0. 
+- returns (dup2(fds[0], 0))  <--- return the new file fd which is 0.
+- **zombie process** is a child process that has terminated but still has an entry in the process table,
+this happens bc the parent process has not yet called wait() to read the child's exit status
 ---
 ## Copy-on-Write (CoW) mechanism
 - After fork(), Instead of duplicating memory immediately, it shares memory between the parent and child processes. Only when one process tries to modify the memory does the OS create a separate copy for that process.
