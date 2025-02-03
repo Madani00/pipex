@@ -280,5 +280,7 @@ int main()
 ---
 ## Copy-on-Write (CoW) mechanism
 - After fork(), Instead of duplicating memory immediately, it shares memory between the parent and child processes. Only when one process tries to modify the memory does the OS create a separate copy for that process.
-- ctrl+z stops a process
+- ctrl+z  temporarily pause a process, You can resume the process using the **fg** `exit 148`
+- ctrl+c stop a running process        `exit 130`
+- ctrl+d   Ends input to the current process or shell.    `exit 0`
 
