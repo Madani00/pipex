@@ -269,6 +269,29 @@ int main()
 }
 ```
 ---
+## while (wait(NULL) > 0)
+```bash
+int main(void)
+{
+    int num_children = 3;
+    for (int i = 0; i < num_children; i++)
+    {
+        pid_t pid = fork();
+        if (pid == 0)
+        {
+            printf("Child %d (PID: %d) started.\n", i + 1, getpid());
+            sleep(i + 4);
+            printf("Child %d (PID: %d) finished.\n", i + 1, getpid());
+            exit(0);
+        }
+    }
+    printf("Parent process (PID: %d) waiting for all children to finish...\n\n", getpid());
+    while (wait(NULL) > 0)
+        ;
+    printf("Parent process (PID: %d) detected all children have finished.\n", getpid());
+}
+```
+---
 ## NOTES
 - **child process** can also create one or more processes (the child becomes the parent of these new processes)
 - **sort** : reads input and writes output, Once the user types Ctrl-D (which closes the write end of the communication channel that connects the keyboard to the stdin of the sort process)
