@@ -279,6 +279,9 @@ int main()
 - returns (dup2(fds[0], 0))  <--- return the new file fd which is 0.
 - **zombie process** is a child process that has terminated but still has an entry in the process table,
 this happens bc the parent process has not yet called wait() to read the child's exit status
+- `while (wait(NULL) > 0` ensures that the parent process waits for all child processes to finish before proceeding.
+it fixes issues with `/dev/random` by ensuring that all child processes complete before the parent process terminates.
+fixes `sleep` by ensuring that the parent process waits for the sleep command to finish before executing the next command.
 ---
 ## Copy-on-Write (CoW) mechanism
 - After fork(), Instead of duplicating memory immediately, it shares memory between the parent and child processes. Only when one process tries to modify the memory does the OS create a separate copy for that process.
