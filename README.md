@@ -270,6 +270,7 @@ int main()
 ```
 ---
 ## while (wait(NULL) > 0)
+- if you just use wait you will notice some behaviors
 ```bash
 int main(void)
 {
