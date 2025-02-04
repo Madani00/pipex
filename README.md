@@ -169,6 +169,8 @@ Without `wait(NULL):`
  
 ---
 ## pipe
+- pipe buffer is stored in `kernel spece`, not in `user space`. This means:
+- The buffer is managed by the operating system / not directly accessible by user-space processes. / kernel handles all the details of reading from and writing to the buffer
 ```bash
 int main()
 {
