@@ -171,6 +171,7 @@ Without `wait(NULL):`
 ## pipe
 - pipe buffer is stored in `kernel spece`, not in `user space`. This means:
 - The buffer is managed by the operating system / not directly accessible by user-space processes. / kernel handles all the details of reading from and writing to the buffer
+- Pipes are blocking by default. If the buffer is empty, the reading process blocks. If the buffer is full, the writing process blocks.
 ```bash
 int main()
 {
