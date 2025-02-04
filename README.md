@@ -313,3 +313,7 @@ fixes `sleep` by ensuring that the parent process waits for the sleep command to
 - ctrl+c stop a running process        `exit 130`
 - ctrl+d   Ends input to the current process or shell.    `exit 0`
 
+![dup](https://github.com/user-attachments/assets/53125f42-64fd-4c00-a977-dc72081adde8)
+
+
+
