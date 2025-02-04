@@ -314,6 +314,10 @@ fixes `sleep` by ensuring that the parent process waits for the sleep command to
 - ctrl+d   Ends input to the current process or shell.    `exit 0`
 
 ![dup](https://github.com/user-attachments/assets/53125f42-64fd-4c00-a977-dc72081adde8)
+![pipe3](https://github.com/user-attachments/assets/b6b40356-6323-4b56-bf49-8f81ac9f13e5)
+![simple_fork](https://github.com/user-attachments/assets/fb2ecadb-f3ab-477d-b9ba-3505a330e75b)
+![sort_pipe_in_out](https://github.com/user-attachments/assets/bf3a1088-2bf0-4069-bde1-3a551c30166c)
+
 
 
 
