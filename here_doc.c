@@ -14,12 +14,17 @@
 
 void	check_limiter(char *line, char *limiter, int write_end)
 {
-	if (ft_strncmp(line, limiter, ft_strlen(limiter)) == 0)
+	char	*n_limiter;
+
+	n_limiter = ft_strjoin(limiter, "\n");
+	if (ft_strncmp(n_limiter, line, ft_strlen(line)) == 0)
 	{
+		free(n_limiter);
 		free(line);
 		close(write_end);
-		exit(0);
+		exit(EXIT_SUCCESS);
 	}
+	free(n_limiter);
 }
 
 void	parent_doc(int read_end, int write_end)
