@@ -32,11 +32,11 @@ void	last_cmd(char *cmd, char **env, char *last_file, int pick_file)
 	out_fd = openlast_file(pick_file, last_file);
 	pid = fork();
 	if (pid == -1)
-		error_message("Error pipe() failed:", 0);
+		error_message("Error fork() failed:", 0);
 	if (pid == 0)
 	{
 		if (dup2(out_fd, STDOUT_FILENO) == -1)
-			ft_putstr_fd("Error how 2 dup2() last failed:", 2);
+			ft_putstr_fd("Error dup2() failed:", 2);
 		close(out_fd);
 		exe(cmd, env);
 	}
@@ -56,11 +56,13 @@ void	pipe_exe(char *cmd, char **env)
 	if (pipe(pipefds) == -1)
 		error_message("Error pipe() failed:", 0);
 	pid = fork();
+	if (pid == -1)
+		error_message("Error fork() failed:", 0);
 	if (pid == 0)
 	{
 		close(pipefds[0]);
 		if (dup2(pipefds[1], 1) == -1)
-			ft_putstr_fd("Error how 22 dup2() failed:", 2);
+			ft_putstr_fd("Error dup2() failed:", 2);
 		close(pipefds[1]);
 		exe(cmd, env);
 	}
@@ -72,6 +74,7 @@ void	pipe_exe(char *cmd, char **env)
 int	main(int argc, char *argv[], char **envp)
 {
 	int	index;
+	int	f_index;
 
 	if (argc >= 5)
 	{
@@ -81,13 +84,15 @@ int	main(int argc, char *argv[], char **envp)
 		}
 		else
 			open_file(argv[1], &index);
+		f_index = index;
 		while (index < argc - 2)
 		{
 			pipe_exe(argv[index], envp);
 			index++;
 		}
-		last_cmd(argv[index], envp, argv[argc - 1], index);
-		wait(NULL);
+		while (wait(NULL) > 0)
+			;
+		last_cmd(argv[index], envp, argv[argc - 1], f_index);
 	}
 	else
 		error_message("try: ./bpipex  cmd1 cmd2 cmd3 .. file", 0);
