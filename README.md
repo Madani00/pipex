@@ -310,6 +310,7 @@ this happens bc the parent process has not yet called wait() to read the child's
 it fixes issues with `/dev/random` by ensuring that all child processes complete before the parent process terminates.
 fixes `sleep` by ensuring that the parent process waits for the sleep command to finish before executing the next command.
 - broken pipe , cat cat ls
+- pipe algorithm
 ---
 ## Copy-on-Write (CoW) mechanism
 - After fork(), Instead of duplicating memory immediately, it shares memory between the parent and child processes. Only when one process tries to modify the memory does the OS create a separate copy for that process.
