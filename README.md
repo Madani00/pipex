@@ -309,7 +309,7 @@ this happens bc the parent process has not yet called wait() to read the child's
 - `while (wait(NULL) > 0` ensures that the parent process waits for all child processes to finish before proceeding.
 it fixes issues with `/dev/random` by ensuring that all child processes complete before the parent process terminates.
 fixes `sleep` by ensuring that the parent process waits for the sleep command to finish before executing the next command.
-- broken pipe , cat cat ls
+- A broken pipe occurs when the read end of a pipe is closed, and the write end attempts to send data.
 - pipe algorithm
 ---
 ## Copy-on-Write (CoW) mechanism
