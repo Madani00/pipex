@@ -21,10 +21,6 @@
 -  ./pipex filein cat "/home/eamchart/Desktop/pipx/pipex" /dev/stdout
 
 
-# mmm
-- i had a problem with leaks in the first command, it was that when i have " " i pass it execve, i fix it with if it was that just exit
--  PATH= :$PATH ./pipex filein "mad" "wjjh" fileout             <--- does not do anything mm why?
-
 valgrind ./pipex filein "." " " /dev/stdout             mmm first command does not print
 
 # hard to handle
